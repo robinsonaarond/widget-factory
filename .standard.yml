@@ -1,0 +1,10 @@
+parallel: true # default: false
+format: progress # default: Standard::Formatter
+ruby_version: 3.0.2 # default: RUBY_VERSION
+default_ignores: false # default: true
+
+ignore: # default: []
+  - 'db/schema.rb'
+  - 'vendor/**/*'
+  - '**/lograge.rb'
+  - '**/log_initializer.rb'

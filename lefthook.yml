@@ -1,0 +1,15 @@
+pre-push:
+  parallel: true
+  commands:
+    js:
+      run: yarn prettier --check "app/**/*.{js,jsx,ts,tsx}"
+    css:
+      glob: '*.{css,scss}'
+      exclude: '_ck_content.scss|icons.css.scss'
+      run: yarn prettier --check "app/**/*.{css,scss}"
+    standard:
+      glob: '*.rb'
+      run: bundle exec standardrb
+    erb:
+      glob: '*.{erb,html.erb}'
+      run: bundle exec erblint --format compact --lint-all --enable-linters space_around_erb_tag,extra_newline
