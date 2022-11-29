@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@moxiworks/mds@#{Rails.application.config.mds_version}/dist/styles/mds-core.css", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <script type="module">
+      import { defineCustomElements } from 'https://cdn.jsdelivr.net/npm/@moxiworks/mds@<%= Rails.application.config.mds_version %>/loader/index.es2017.js';
+      defineCustomElements();
+    </script>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="mds">
     <%= yield %>
   </body>
 </html>
