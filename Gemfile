@@ -14,6 +14,7 @@ gem "redis", "~> 4.0"
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 gem "bootsnap", require: false
 gem "view_component"
+gem "rest-client"
 
 # Use Sass to process CSS
 # gem "sassc-rails"
