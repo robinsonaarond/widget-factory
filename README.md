@@ -24,3 +24,15 @@ Take the example component (ExampleComponent.new()). If you go to `/component/ex
 We're opting to use [Ruby View Components](https://viewcomponent.org/) for this. To create a new component please do the following from your terminal:
 
 `bin/rails g component ListTrac`
+
+This will create the following:
+
+```
+app/components/list_trac_component.rb
+test/components/list_trac_component_test.rb
+app/components/list_trac_component.html.erb
+```
+
+And if you want to view the component you'd go to:
+
+`/component/list_trac`
