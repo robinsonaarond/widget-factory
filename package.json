@@ -1,0 +1,23 @@
+{
+  "name": "widget-factory",
+  "version": "0.0.1",
+  "description": "The Widget Factory is a Rails 7 application for creating and distributing widgets in application. Initially this will be implemented in Nucleus but may go beyond if it proves successful.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moxiworks/widget-factory.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moxiworks/widget-factory/issues"
+  },
+  "homepage": "https://github.com/moxiworks/widget-factory#readme"
+}
