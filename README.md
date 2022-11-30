@@ -38,3 +38,12 @@ test/components/list_trac/list_trac_component_test.rb
 And if you want to view the component you'd go to:
 
 `http://localhost:{port}/component/list_trac`
+
+## Development
+
+After forking and cloning the repository. From your terminal:
+
+1. `bundle install`
+2. `yarn install`
+3. `lefthook install` (Installed by bundler. This will add linting validations pre-push)
+4. `rails s -p 5000` (or whatever port you desire)
