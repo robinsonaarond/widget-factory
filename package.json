@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/moxiworks/widget-factory/issues"
   },
-  "homepage": "https://github.com/moxiworks/widget-factory#readme"
+  "homepage": "https://github.com/moxiworks/widget-factory#readme",
+  "devDependencies": {
+    "prettier": "^2.8.0"
+  }
 }
