@@ -21,18 +21,20 @@ Take the example component (ExampleComponent.new()). If you go to `/component/ex
 
 ## Creating a New Component
 
-We're opting to use [Ruby View Components](https://viewcomponent.org/) for this. To create a new component please do the following from your terminal:
+We're opting to use [Ruby View Components](https://viewcomponent.org/) for this. To ensure the components live in their own directory we're recommending namespace-ing the component where the namespace and the component name match. This is required for dynamic routing.
 
-`bin/rails g component ListTrac`
+ListTrac example:
+
+`bin/rails g component ListTrac::ListTrac`
 
 This will create the following:
 
 ```
-app/components/list_trac_component.rb
-test/components/list_trac_component_test.rb
-app/components/list_trac_component.html.erb
+app/components/list_trac/list_trac_component.rb
+app/components/list_trac/list_trac_component.html.erb
+test/components/list_trac/list_trac_component_test.rb
 ```
 
 And if you want to view the component you'd go to:
 
-`/component/list_trac`
+`http://localhost:{port}/component/list_trac`
