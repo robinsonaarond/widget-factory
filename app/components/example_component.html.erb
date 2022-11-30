@@ -1,0 +1,9 @@
+<div>
+  <h3><%= @title %></h3>
+  <p>This is a silly little component outputting all of the universities in Los Angeles County.</p>
+  <ul>
+    <% @data[:features].each do |datum| %>
+      <li><%= datum[:attributes][:Name] %></li>
+    <% end %>
+  </ul>
+</div>
