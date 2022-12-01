@@ -1,6 +1,6 @@
 class ComponentController < ApplicationController
   include Cachable
-  
+
   before_action :put_time
   caches_action :name, expires_in: default_cache_time
 
@@ -17,6 +17,9 @@ class ComponentController < ApplicationController
 
   private
 
+  # Temporary method to make sure action caching
+  # is working properly. This will be swapped out
+  # for session verification.
   def put_time
     p "+_+_+_+_+_+"
     p Time.now
