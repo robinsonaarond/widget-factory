@@ -1,6 +1,6 @@
 class ComponentController < ApplicationController
-  include Cachable
-  
+  include Cacheable
+
   caches_action :name, expires_in: default_cache_time
 
   def name

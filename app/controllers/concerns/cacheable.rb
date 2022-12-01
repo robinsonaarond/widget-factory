@@ -1,4 +1,4 @@
-module Cachable
+module Cacheable
   extend ActiveSupport::Concern
   def default_cache_time
     self.class.default_cache_time

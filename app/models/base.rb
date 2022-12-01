@@ -3,7 +3,7 @@ require "net/http"
 
 class Base
   include ActiveModel::Model
-  include Cachable
+  include Cacheable
 
   def self.profile_request(url, query_params = {})
     sr = WmsResource::SecureRequest.new("profile")

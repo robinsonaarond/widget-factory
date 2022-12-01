@@ -47,3 +47,7 @@ After forking and cloning the repository. From your terminal:
 2. `yarn install`
 3. `lefthook install` (Installed by bundler. This will add linting validations pre-push)
 4. `rails s -p 5000` (or whatever port you desire)
+
+### Requirements
+
+You will need to add a `config/secreq.yml` file with proper salt hashes for secure requests to our services. Since this project is not locked, this file is in .gitignore. You can grab the contents of this file from Nucleus when needed.

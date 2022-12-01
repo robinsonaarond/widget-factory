@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExampleComponent < ViewComponent::Base
-  include Cachable
+  include Cacheable
 
   def initialize
     @title = "Example Component"
