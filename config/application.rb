@@ -12,6 +12,11 @@ module WidgetFactory
     config.load_defaults 7.0
 
     # Configuration for the application, engines, and railties goes here.
+    config.action_dispatch.default_headers = {
+      "X-Frame-Options" => "ALLOWALL", # Allow iframes
+      "X-XSS-Protection" => "1; mode=block", # Rails Default
+      "X-Content-Type-Options" => "nosniff" # Rails Default
+    }
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.

@@ -1,1 +1,191 @@
-<div>Add ListTrac::ListTrac template here</div>
+<!-- Token: <%= @token %> -->
+<link rel="stylesheet" type="text/css" href="/assets/list_trac/style.css">
+
+<% unless current_page?(component_named_expanded_path) %>
+<%# Inline Widget %>
+<div class="text-primary shadow-3 rounded-lg overflow-hidden m-8">
+  <header class="flex items-center min-h-48 bg-white border-b px-16">
+    <p role="heading" aria-level="1" class="my-0 subtitle3">
+      Online Activity
+    </p>
+  </header>
+  <div class="p-16 bg-gray">
+    <table class="w-full rounded-xl bg-white shadow-1" cellspacing="0">
+      <thead class="h-32">
+        <tr>
+          <th class="text-left pl-24">Address</th>
+          <th>Views</th>
+          <th>Leads</th>
+          <th><span class="sr-only">Action</span></th>
+        </tr>
+      </thead>
+      <tbody class="caption2">
+        <tr>
+          <td>123 Main St</td>
+          <td>100</td>
+          <td>10</td>
+          <td><i class="icon icon-file-plus"></i></td>
+        </tr>
+        <tr>
+          <td>456 Main St</td>
+          <td>200</td>
+          <td>20</td>
+          <td><span class="icon icon-file-plus"></span></td>
+        </tr>
+        <tr>
+          <td>789 Main St</td>
+          <td>300</td>
+          <td>30</td>
+          <td><span class="icon icon-file-plus"></span></td>
+        </tr>
+        <tr>
+          <td>101 Main St</td>
+          <td>400</td>
+          <td>40</td>
+          <td><span class="icon icon-file-plus"></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <footer
+    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
+  >
+    <img src="/assets/list_trac/logo.png" width="64" height="30" />
+    <div class="flex items-center space-x-8">
+      <button class="expand-button cursor-pointer">
+        <span class="icon icon-grow"></span>
+      </button>
+      <button class="menu-button cursor-pointer">
+        <span class="icon icon-dots-three-vertical"></span>
+      </button>
+      <mx-menu>
+        <mx-menu-item>Change settings</mx-menu-item>
+        <mx-menu-item>Remove widget</mx-menu-item>
+      </mx-menu>
+    </div>
+  </footer>
+</div>
+
+<%# Inline Widget Script %>
+<script>
+const menu = document.querySelector("mx-menu");
+const menuButton = document.querySelector(".menu-button");
+menu.anchorEl = menuButton;
+
+const expandButton = document.querySelector(".expand-button");
+expandButton.addEventListener("click", () => {
+  const { origin, pathname, search } = window.location;
+  const url = `${window.location.origin}<%= component_named_expanded_path %>`;
+  console.log('Expand', url)
+  window.parent.postMessage(
+    { type: "EXPAND", payload: { url } },
+    "*"
+  );
+});
+
+const menuItems = document.querySelectorAll("mx-menu-item");
+menuItems[0].addEventListener("click", () => {
+  console.log("Clicked on menu item 1");
+  window.parent.postMessage(
+    { type: "CHANGE_SETTINGS", payload: {} },
+    "*"
+  );
+});
+menuItems[1].addEventListener("click", () => {
+  console.log("Clicked on menu item 2");
+  window.parent.postMessage(
+    { type: "REMOVE", payload: {} },
+    "*"
+  );
+});
+</script>
+
+<% else %>
+
+<%# Expanded Widget %>
+<div class="w-screen h-screen">
+  <mx-modal large close-on-escape="false">
+    <div slot="header-left">Online Activity</div>
+    <div slot="header-right" class="flex items-center space-x-16">
+      <mx-search flat dense placeholder="Search"></mx-search>
+      <mx-button class="close-button" btn-type="text">Close</mx-button>
+    </div>
+    <mx-table>
+      <div>
+        <mx-table-row>
+          <mx-table-cell>123 Main St</mx-table-cell>
+          <mx-table-cell>Pending</mx-table-cell>
+          <mx-table-cell>100</mx-table-cell>
+          <mx-table-cell>10</mx-table-cell>
+          <mx-table-cell>
+            <mx-button btn-type="text" icon="icon icon-visibility">Preview</mx-button>
+            <mx-button btn-type="text" icon="icon icon-event">Schedule Report</mx-button>
+          </mx-table-cell>
+        </mx-table-row>
+        <mx-table-row>
+          <mx-table-cell>456 Main St</mx-table-cell>
+          <mx-table-cell>Pending</mx-table-cell>
+          <mx-table-cell>200</mx-table-cell>
+          <mx-table-cell>20</mx-table-cell>
+          <mx-table-cell>
+            <mx-button btn-type="text" icon="icon icon-visibility">Preview</mx-button>
+            <mx-button btn-type="text" icon="icon icon-event">Schedule Report</mx-button>
+          </mx-table-cell>
+        </mx-table-row>
+        <mx-table-row>
+          <mx-table-cell>789 Main St</mx-table-cell>
+          <mx-table-cell>Pending</mx-table-cell>
+          <mx-table-cell>300</mx-table-cell>
+          <mx-table-cell>30</mx-table-cell>
+          <mx-table-cell>
+            <mx-button btn-type="text" icon="icon icon-visibility">Preview</mx-button>
+            <mx-button btn-type="text" icon="icon icon-event">Schedule Report</mx-button>
+          </mx-table-cell>
+        </mx-table-row>
+        <mx-table-row>
+          <mx-table-cell>101 Main St</mx-table-cell>
+          <mx-table-cell>Pending</mx-table-cell>
+          <mx-table-cell>400</mx-table-cell>
+          <mx-table-cell>40</mx-table-cell>
+          <mx-table-cell>
+            <mx-button btn-type="text" icon="icon icon-visibility">Preview</mx-button>
+            <mx-button btn-type="text" icon="icon icon-event">Schedule Report</mx-button>
+          </mx-table-cell>
+        </mx-table-row>
+      </div>
+    </mx-table>
+  </mx-modal>
+</div>
+
+<%# Expanded Widget Script %>
+<script>
+const sendCloseMessage = () => {
+  window.parent.postMessage(
+    { type: "CLOSE_EXPANDED", payload: {} },
+    "*"
+  );
+}
+const modal = document.querySelector("mx-modal");
+setTimeout(() => modal.isOpen = true, 200);
+modal.addEventListener("mxClose", sendCloseMessage);
+/* We have to recreate the close button since we are overriding the default content of the 
+/* header-right slot. */
+const closeButton = document.querySelector(".close-button");
+closeButton.addEventListener("click", sendCloseMessage);
+
+/* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") sendCloseMessage();
+});
+
+const table = document.querySelector("mx-table");
+table.columns = [
+  { heading: "Listing" },
+  { heading: "Status" },
+  { heading: "Views" },
+  { heading: "Leads" },
+  { isActionColumn: true, align: 'right', cellClass: 'sm:p-0' },
+];
+
+</script>
+<% end %>
