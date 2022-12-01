@@ -36,3 +36,6 @@
 
 # Node stuff.
 /node_modules
+
+# Misc
+/config/secreq.yml

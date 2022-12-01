@@ -19,8 +19,12 @@ gem "rest-client"
 gem "actionpack-page_caching"
 gem "actionpack-action_caching"
 
-# Use Sass to process CSS
-# gem "sassc-rails"
+source "https://gems.moxiworks.com" do
+  gem "wms_resource",
+    git: "git@github.com:moxiworks/wms_resource.git",
+    tag: "4.1.5"
+  gem "wms_svc_consumer", "~> 1.0.17"
+end
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
