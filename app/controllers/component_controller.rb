@@ -1,4 +1,7 @@
 class ComponentController < ApplicationController
+  before_action :put_time
+  caches_action :name
+
   def name
     # Looks for namespaced component first.
     obj = begin
@@ -8,5 +11,12 @@ class ComponentController < ApplicationController
     end
 
     render(obj)
+  end
+
+  private
+
+  def put_time
+    p "+_+_+_+_+_+"
+    p Time.now
   end
 end

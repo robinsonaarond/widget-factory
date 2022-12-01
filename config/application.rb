@@ -18,5 +18,10 @@ module WidgetFactory
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.memcached_server = "memcached-nucleus-1-devint.xq42gy.cfg.usw2.cache.amazonaws.com:11211"
+    config.cache_store = :mem_cache_store, config.memcached_server, {namespace: "_widgetfactory_"}
+    config.action_controller.perform_caching = true
+    config.action_controller.page_cache_directory = Rails.root.join("public", "cached_pages")
   end
 end
