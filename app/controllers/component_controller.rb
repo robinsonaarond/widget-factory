@@ -1,6 +1,8 @@
 class ComponentController < ApplicationController
+  include Cachable
+  
   before_action :put_time
-  caches_action :name
+  caches_action :name, expires_in: default_cache_time
 
   def name
     # Looks for namespaced component first.
