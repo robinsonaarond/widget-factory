@@ -11,7 +11,7 @@ class Session
       office_external_id: user[:office][:office_external_id],
       company_external_id: user[:company][:company_external_id],
       board_external_id: user[:board][:board_external_id],
-      board_mls_id: user[:board][:mls_id],
+      board_mls_id: user[:board][:mls_id]
     }
 
     session[:current_user] = h
