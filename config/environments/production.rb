@@ -91,5 +91,5 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.base_profile_service_url = "https://svc.moxiworks.com/service/profile/v3/nucleus/profile"
+  config.base_profile_service_url = "https://svc.moxiworks.com/service/profile/v3/nucleus"
 end
