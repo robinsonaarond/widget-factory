@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
   get "welcome/index"
+  get "welcome/user_session"
 
-  get "component/:name" => "component#name", :as => :component_default
-  get "component/:name/expanded" => "component#name", :as => :component_expanded
+  get "component/:name/:user_uuid" => "component#name", :as => :component_named_default
+  get "component/:name/expanded/:user_uuid" => "component#name", :as => :component_named_expanded
 
   root "welcome#index"
 end

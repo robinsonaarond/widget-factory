@@ -47,3 +47,15 @@ After forking and cloning the repository. From your terminal:
 2. `yarn install`
 3. `lefthook install` (Installed by bundler. This will add linting validations pre-push)
 4. `rails s -p 5000` (or whatever port you desire)
+
+### Requirements
+
+#### Secure Request Salts
+
+You will need to add a `config/secreq.yml` file with proper salt hashes for secure requests to our services. Since this project is not locked, this file is in .gitignore. You can grab the contents of this file from Nucleus when needed.
+
+### Vendor API Access Tokens
+
+There is a `config/vendor_api_data.example.yml` file. You'll need to create a `config/initializers/vendor_api_data.yml` file and add proper credentials for the APIs you're wanting to connect to. This file has been added to .gitignore as to not be pushed to GH.
+
+There is a global variable set as `VendorApiAccess`.

@@ -1,0 +1,14 @@
+development:
+  salt: 'xx'
+dev_integration:
+  salt: 'xx'
+qa:
+  salt: 'xx'
+staging:
+  salt: 'xx'
+uat:
+  salt: 'xx'
+production:
+  salt: 'xx'
+test:
+  salt: 'xx'
