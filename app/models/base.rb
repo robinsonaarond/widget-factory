@@ -12,8 +12,6 @@ class Base
       uri = URI(url)
       uri.query = URI.encode_www_form(query_params.merge(sr_hash: sr.generate_hash, sr_timestamp: sr.timestamp))
 
-      pp uri
-
       res = Net::HTTP.get_response(uri)
 
       JSON.parse(res.body, symbolize_names: true)
