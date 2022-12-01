@@ -1,12 +1,5 @@
 class Session
   def self.set_user_on_session(user, session)
-
-
-    p "+_+_+_+_+"
-    pp user[:full_name]
-    p "+_+_+_+_+_+_+"
-    pp user
-
     h = {
       full_name: user[:full_name],
       uuid: user[:uuid],
