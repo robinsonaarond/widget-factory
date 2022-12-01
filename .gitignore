@@ -36,3 +36,7 @@
 
 # Node stuff.
 /node_modules
+
+# Misc
+/config/secreq.yml
+/config/vendor_api_data.yml
