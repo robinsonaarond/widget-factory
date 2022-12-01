@@ -23,5 +23,6 @@ class ComponentController < ApplicationController
   def put_time
     p "+_+_+_+_+_+"
     p Time.now
+    p Rails.application.config.base_profile_service_url
   end
 end
