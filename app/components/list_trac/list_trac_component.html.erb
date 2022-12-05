@@ -3,13 +3,13 @@
 
 <% unless current_page?(component_named_expanded_path) %>
 <%# Inline Widget %>
-<div class="text-primary shadow-3 rounded-lg overflow-hidden m-8">
+<div class="list_trac inline-widget flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16">
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Online Activity
     </p>
   </header>
-  <div class="p-16 bg-gray">
+  <div class="flex-1 p-16 bg-gray">
     <table class="w-full rounded-xl bg-white shadow-1" cellspacing="0">
       <thead class="h-32">
         <tr>
@@ -36,10 +36,10 @@
   >
     <img src="/assets/list_trac/logo.png" width="64" height="30" />
     <div class="flex items-center space-x-8">
-      <button class="expand-button cursor-pointer">
+      <button class="expand-button flex items-center cursor-pointer">
         <span class="icon icon-grow"></span>
       </button>
-      <button class="menu-button cursor-pointer">
+      <button class="menu-button flex items-center cursor-pointer">
         <span class="icon icon-dots-three-vertical"></span>
       </button>
       <mx-menu>
@@ -69,14 +69,12 @@ expandButton.addEventListener("click", () => {
 
 const menuItems = document.querySelectorAll("mx-menu-item");
 menuItems[0].addEventListener("click", () => {
-  console.log("Clicked on menu item 1");
   window.parent.postMessage(
     { type: "CHANGE_SETTINGS", payload: {} },
     "*"
   );
 });
 menuItems[1].addEventListener("click", () => {
-  console.log("Clicked on menu item 2");
   window.parent.postMessage(
     { type: "REMOVE", payload: {} },
     "*"
@@ -87,7 +85,7 @@ menuItems[1].addEventListener("click", () => {
 <% else %>
 
 <%# Expanded Widget %>
-<div class="w-screen h-screen">
+<div class="list_trac w-screen h-screen">
   <mx-modal large close-on-escape="false">
     <div slot="header-left">Online Activity</div>
     <div slot="header-right" class="flex items-center space-x-16">

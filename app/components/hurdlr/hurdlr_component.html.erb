@@ -1,0 +1,113 @@
+<link rel="stylesheet" type="text/css" href="/assets/hurdlr/style.css">
+
+<div class="hurdlr inline-widget flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
+  <header class="flex items-center min-h-48 bg-white border-b px-16">
+    <p role="heading" aria-level="1" class="my-0 subtitle3">
+      Profit + Loss
+    </p>
+  </header>
+  <div class="flex-1 subtitle4 p-16">
+    <table class="w-full" cellspacing="0">
+      <thead class="sr-only">
+        <tr>
+          <th id="metric-heading">Metric</th>
+          <th id="amount-heading">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <footer
+    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
+  >
+    <img src="/assets/hurdlr/logo.png" width="64" height="30" />
+    <div class="flex items-center">
+      <button class="menu-button flex items-center cursor-pointer">
+        <span class="icon icon-dots-three-vertical"></span>
+      </button>
+      <mx-menu>
+        <mx-menu-item>Hide details</mx-menu-item>
+        <mx-menu-item>Change settings</mx-menu-item>
+        <mx-menu-item>Remove widget</mx-menu-item>
+      </mx-menu>
+    </div>
+  </footer>
+</div>
+
+<script>
+const rows = [
+  { label: 'Income', key: 'revenue', value: <%= @data[:revenue] %> },
+  { label: 'Expenses', key: 'expenses', value: <%= @data[:expenses] %> },
+  { label: 'Taxes', key: 'overallTaxAmount', value: <%= @data[:overallTaxAmount] %> },
+  { label: 'Profit after tax', key: 'afterTaxIncome', value: <%= @data[:afterTaxIncome] %> },
+];
+const formatUSD = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+const tbody = document.querySelector('tbody');
+// Generate the table rows
+rows.forEach(row => {
+  const tr = document.createElement('tr');
+  const percent = row.value / <%= @data[:revenue] %> * 100;
+  tr.innerHTML = `
+    <td aria-labelledby="metric-heading" id="${row.key}-label">
+      <div class="relative bg-bar overflow-hidden rounded h-32">
+        <div class="bg-bar-fill inline-block h-full rounded transform origin-left scale-x-0 transition-transform duration-200" style="width: ${percent}%"></div>
+        <span class="absolute top-0 flex px-8 h-full items-center whitespace-nowrap transition-opacity opacity-0 duration-200" data-percent="${percent}">
+          ${row.label}
+        </span>
+      </div>
+    </td>
+    <td class="align-middle" aria-labelledby="amount-heading ${row.key}-label">
+      ${formatUSD.format(row.value)}
+    </td>
+  `
+  tbody.appendChild(tr);
+});
+
+// Move labels onto the bar if they do not fit to the right
+const observer = new ResizeObserver(() => {
+  const labels = document.querySelectorAll('.bg-bar > span');
+  labels.forEach(label => {
+    const percentNeeded = label.offsetWidth / label.parentElement.offsetWidth * 100;
+    const percentAvailable = 100 - label.dataset.percent;
+    label.classList.remove('opacity-0'); // Fade in labels
+    if (percentNeeded > percentAvailable) {
+      label.style.left = '0';
+      label.classList.add('text-white');
+    } else {
+      label.style.left = `${label.dataset.percent}%`;
+      label.classList.remove('text-white');
+    }
+  });
+});
+setTimeout(() => {
+  document.querySelectorAll('.scale-x-0').forEach(el => {
+    el.classList.remove('scale-x-0'); // Animate bars
+  });
+  observer.observe(document.querySelector('table'))
+}, 100);
+
+const menu = document.querySelector("mx-menu");
+const menuButton = document.querySelector(".menu-button");
+menu.anchorEl = menuButton;
+
+const menuItems = document.querySelectorAll("mx-menu-item");
+// TODO: "Hide details" menu item
+menuItems[1].addEventListener("click", () => {
+  window.parent.postMessage(
+    { type: "CHANGE_SETTINGS", payload: {} },
+    "*"
+  );
+});
+menuItems[2].addEventListener("click", () => {
+  window.parent.postMessage(
+    { type: "REMOVE", payload: {} },
+    "*"
+  );
+});
+</script>
