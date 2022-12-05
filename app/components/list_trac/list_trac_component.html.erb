@@ -20,30 +20,14 @@
         </tr>
       </thead>
       <tbody class="caption2">
+        <% @listings.each do |listing| %>
         <tr>
-          <td>123 Main St</td>
-          <td>100</td>
-          <td>10</td>
+          <td><%= listing[:address] %></td>
+          <td><%= listing[:views] %></td>
+          <td><%= listing[:leads] %></td>
           <td><i class="icon icon-file-plus"></i></td>
         </tr>
-        <tr>
-          <td>456 Main St</td>
-          <td>200</td>
-          <td>20</td>
-          <td><span class="icon icon-file-plus"></span></td>
-        </tr>
-        <tr>
-          <td>789 Main St</td>
-          <td>300</td>
-          <td>30</td>
-          <td><span class="icon icon-file-plus"></span></td>
-        </tr>
-        <tr>
-          <td>101 Main St</td>
-          <td>400</td>
-          <td>40</td>
-          <td><span class="icon icon-file-plus"></span></td>
-        </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

@@ -16,6 +16,7 @@ class ListTrac::ListTracComponent < ViewComponent::Base
     #     "enddate": '20221123'
     #   }
     # )
+    @listings = demo_listings # TODO: only use demo listings for widget library demo
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -28,5 +29,30 @@ class ListTrac::ListTracComponent < ViewComponent::Base
     json_response = RestClient.get "https://b2b.listtrac.com/api/getkey?#{key_params.to_query}"
     response = JSON.parse(json_response, symbolize_names: true)
     Digest::MD5.hexdigest(pass + response[:key])
+  end
+
+  def demo_listings
+    [
+      {
+        address: "123 Main St",
+        views: 100,
+        leads: 10
+      },
+      {
+        address: "456 Main St",
+        views: 200,
+        leads: 20
+      },
+      {
+        address: "789 Main St",
+        views: 300,
+        leads: 30
+      },
+      {
+        address: "101 Main St",
+        views: 400,
+        leads: 40
+      }
+    ]
   end
 end
