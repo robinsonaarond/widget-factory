@@ -14,9 +14,12 @@
  *= require_self
  */
 
-:root {
+.mds {
   --primary: #430098;
   --mds-text-btn-text: var(--primary);
+  --mds-bg-btn-text-focus: #e5def2;
+  --mds-bg-btn-text-hover: #eee8f6;
+  --mds-border-search-focus: var(--primary);
 }
 body {
   margin: 0;
