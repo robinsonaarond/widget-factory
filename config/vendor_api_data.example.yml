@@ -1,3 +1,8 @@
+hurdlr:
+  sandbox_token: 'XX'
+  production_token: 'XX'
+  test_user_id: ''
+
 list_trac:
   username: 'XX'
   password: 'XX'
