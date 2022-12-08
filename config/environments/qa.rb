@@ -53,4 +53,5 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.base_profile_service_url = "https://svc-qa.moxiworks.com/service/profile/v3/nucleus"
+  config.auth_service_url = "https://svc-qa.moxiworks.com/service/v1/auth"
 end
