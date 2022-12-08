@@ -33,6 +33,7 @@ end
 group :development do
   gem "web-console"
   gem "lefthook"
+  gem "pry"
   gem "standard", require: false
   gem "erb_lint", require: false
   gem "rubocop-rails", require: false
