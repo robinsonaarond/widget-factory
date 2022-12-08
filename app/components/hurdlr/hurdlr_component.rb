@@ -7,13 +7,13 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
   end
 
   def user_vitals
-    api_post("userVitals", { userId: VendorApiAccess["hurdlr"]["test_user_id"] })
+    api_post("userVitals", {userId: VendorApiAccess["hurdlr"]["test_user_id"]})
   end
 
   def api_post(endpoint, payload)
     base_url = Rails.env.development? ? "https://sandbox.hurdlr.com/rest/v1/enterprise" : "https://app.hurdlr.com/rest/v1/enterprise"
     token = VendorApiAccess["hurdlr"][Rails.env.development? ? "sandbox_token" : "production_token"]
-    json = RestClient.post("#{base_url}/#{endpoint}", payload.to_json, headers={Authorization: "Bearer #{token}"})
+    json = RestClient.post("#{base_url}/#{endpoint}", payload.to_json, {Authorization: "Bearer #{token}"})
     JSON.parse(json, symbolize_names: true)
   end
 
