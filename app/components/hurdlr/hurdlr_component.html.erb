@@ -2,9 +2,13 @@
 
 <div class="hurdlr inline-widget flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16">
+    <% if params[:selected] %>
+      <mx-checkbox checked="<%= params[:selected] == "1" %>" label-name="Profit + Loss" label-class="my-0 subtitle3 select-none"></mx-checkbox>
+    <% else %>
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Profit + Loss
     </p>
+    <% end %>
   </header>
   <div class="flex-1 subtitle4 p-16">
     <table class="w-full" cellspacing="0">
@@ -23,14 +27,16 @@
   >
     <img src="/assets/hurdlr/logo.png" width="64" height="30" />
     <div class="flex items-center">
-      <button class="menu-button flex items-center cursor-pointer">
-        <span class="icon icon-dots-three-vertical"></span>
-      </button>
-      <mx-menu>
-        <mx-menu-item>Hide details</mx-menu-item>
-        <mx-menu-item>Change settings</mx-menu-item>
-        <mx-menu-item>Remove widget</mx-menu-item>
-      </mx-menu>
+      <% unless params[:selected] %>
+        <button class="menu-button flex items-center cursor-pointer">
+          <span class="icon icon-dots-three-vertical"></span>
+        </button>
+        <mx-menu>
+          <mx-menu-item>Hide details</mx-menu-item>
+          <mx-menu-item>Change settings</mx-menu-item>
+          <mx-menu-item>Remove widget</mx-menu-item>
+        </mx-menu>
+      <% end %>
     </div>
   </footer>
 </div>
