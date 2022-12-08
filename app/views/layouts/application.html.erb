@@ -11,6 +11,19 @@
       import { defineCustomElements } from 'https://cdn.jsdelivr.net/npm/@moxiworks/mds@<%= Rails.application.config.mds_version %>/loader/index.es2017.js';
       defineCustomElements();
     </script>
+    <script type="module">
+      // Close open menus (via Escape key) when a click has occurred outside of the widget
+      window.addEventListener('message', e => {
+        if (e.data.type === 'CLICK') {
+          if (e.data.payload.source === '<%= params[:name] %>') return;
+          document.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Escape'}));
+        }
+      });
+      // Notify parent of click, so it can notify other widgets to close their open menus
+      window.addEventListener('click', () => {
+        window.parent.postMessage({ type: 'CLICK', payload: { source: '<%= params[:name] %>' } }, '*');
+      });
+    </script>
   </head>
 
   <body class="mds">
