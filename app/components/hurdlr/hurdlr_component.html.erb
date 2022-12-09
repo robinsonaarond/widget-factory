@@ -2,8 +2,8 @@
 
 <div class="hurdlr inline-widget flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16">
-    <% if params[:selected] %>
-      <mx-checkbox checked="<%= params[:selected] == "1" %>" label-name="Profit + Loss" label-class="my-0 subtitle3 select-none"></mx-checkbox>
+    <% if @library_mode %>
+      <mx-checkbox checked="<%= @selected %>" label-name="Profit + Loss" label-class="my-0 subtitle3 select-none"></mx-checkbox>
     <% else %>
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Profit + Loss
@@ -27,7 +27,7 @@
   >
     <img src="/assets/hurdlr/logo.png" width="64" height="30" />
     <div class="flex items-center">
-      <% unless params[:selected] %>
+      <% unless @library_mode %>
         <button class="menu-button flex items-center cursor-pointer">
           <span class="icon icon-dots-three-vertical"></span>
         </button>
@@ -41,7 +41,8 @@
   </footer>
 </div>
 
-<script>
+<script type="module">
+const root = document.querySelector('.hurdlr');
 const rows = [
   { label: 'Income', key: 'revenue', value: <%= @data[:revenue] %> },
   { label: 'Expenses', key: 'expenses', value: <%= @data[:expenses] %> },
@@ -54,7 +55,7 @@ const formatUSD = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
 });
-const tbody = document.querySelector('tbody');
+const tbody = root.querySelector('tbody');
 // Generate the table rows
 rows.forEach(row => {
   const tr = document.createElement('tr');
@@ -77,7 +78,7 @@ rows.forEach(row => {
 
 // Move labels onto the bar if they do not fit to the right
 const observer = new ResizeObserver(() => {
-  const labels = document.querySelectorAll('.bg-bar > span');
+  const labels = root.querySelectorAll('.bg-bar > span');
   labels.forEach(label => {
     const percentNeeded = label.offsetWidth / label.parentElement.offsetWidth * 100;
     const percentAvailable = 100 - label.dataset.percent;
@@ -92,28 +93,30 @@ const observer = new ResizeObserver(() => {
   });
 });
 setTimeout(() => {
-  document.querySelectorAll('.scale-x-0').forEach(el => {
+  root.querySelectorAll('.scale-x-0').forEach(el => {
     el.classList.remove('scale-x-0'); // Animate bars
   });
-  observer.observe(document.querySelector('table'))
+  observer.observe(root.querySelector('table'))
 }, 100);
 
-const menu = document.querySelector("mx-menu");
-const menuButton = document.querySelector(".menu-button");
-menu.anchorEl = menuButton;
+const menu = root.querySelector("mx-menu");
+const menuButton = root.querySelector(".menu-button");
+if (menu && menuButton) menu.anchorEl = menuButton;
 
-const menuItems = document.querySelectorAll("mx-menu-item");
-// TODO: "Hide details" menu item
-menuItems[1].addEventListener("click", () => {
-  window.parent.postMessage(
-    { type: "CHANGE_SETTINGS", payload: {} },
-    "*"
-  );
-});
-menuItems[2].addEventListener("click", () => {
-  window.parent.postMessage(
-    { type: "REMOVE", payload: {} },
-    "*"
-  );
-});
+const menuItems = root.querySelectorAll("mx-menu-item");
+if (menuItems.length) {
+
+  menuItems[1].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "CHANGE_SETTINGS", payload: {} },
+      "*"
+    );
+  });
+  menuItems[2].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "REMOVE", payload: {} },
+      "*"
+    );
+  });
+}
 </script>

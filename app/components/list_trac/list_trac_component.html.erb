@@ -1,12 +1,12 @@
 <!-- Token: <%= @token %> -->
 <link rel="stylesheet" type="text/css" href="/assets/list_trac/style.css">
 
-<% unless current_page?(component_named_expanded_path) %>
+<% unless current_page?(component_named_expanded_path('list_trac')) %>
 <%# Inline Widget %>
 <div class="list_trac inline-widget flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16">
-    <% if params[:selected] %>
-      <mx-checkbox checked="<%= params[:selected] == "1" %>" label-name="Online Activity" label-class="my-0 subtitle3 select-none"></mx-checkbox>
+    <% if @library_mode %>
+      <mx-checkbox checked="<%= @selected %>" label-name="Online Activity" label-class="my-0 subtitle3 select-none"></mx-checkbox>
     <% else %>
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Online Activity
@@ -40,7 +40,7 @@
   >
     <img src="/assets/list_trac/logo.png" width="64" height="30" />
     <div class="flex items-center space-x-8">
-      <% unless params[:selected] %>
+      <% unless @library_mode %>
         <button class="expand-button flex items-center cursor-pointer">
           <span class="icon icon-grow"></span>
         </button>
@@ -57,35 +57,39 @@
 </div>
 
 <%# Inline Widget Script %>
-<script>
-const menu = document.querySelector("mx-menu");
-const menuButton = document.querySelector(".menu-button");
-menu.anchorEl = menuButton;
+<script type="module">
+const root = document.querySelector('.list_trac');
+const menu = root.querySelector("mx-menu");
+const menuButton = root.querySelector(".menu-button");
+if (menu && menuButton) menu.anchorEl = menuButton;
 
-const expandButton = document.querySelector(".expand-button");
-expandButton.addEventListener("click", () => {
-  const { origin, pathname, search } = window.location;
-  const url = `${window.location.origin}<%= component_named_expanded_path %>`;
-  console.log('Expand', url)
-  window.parent.postMessage(
-    { type: "EXPAND", payload: { url } },
-    "*"
-  );
-});
+const expandButton = root.querySelector(".expand-button");
+if (expandButton) {
+  expandButton.addEventListener("click", () => {
+    const { origin, pathname, search } = window.location;
+    const url = `${window.location.origin}<%= component_named_expanded_path('list_trac', params[:session_id]) %>`;
+    window.parent.postMessage(
+      { type: "EXPAND", payload: { url } },
+      "*"
+    );
+  });
+}
 
-const menuItems = document.querySelectorAll("mx-menu-item");
-menuItems[0].addEventListener("click", () => {
-  window.parent.postMessage(
-    { type: "CHANGE_SETTINGS", payload: {} },
-    "*"
-  );
-});
-menuItems[1].addEventListener("click", () => {
-  window.parent.postMessage(
-    { type: "REMOVE", payload: {} },
-    "*"
-  );
-});
+const menuItems = root.querySelectorAll("mx-menu-item");
+if (menuItems.length) {
+  menuItems[0].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "CHANGE_SETTINGS", payload: {} },
+      "*"
+    );
+  });
+  menuItems[1].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "REMOVE", payload: {} },
+      "*"
+    );
+  });
+}
 </script>
 
 <% else %>
@@ -146,19 +150,20 @@ menuItems[1].addEventListener("click", () => {
 </div>
 
 <%# Expanded Widget Script %>
-<script>
+<script type="module">
+const root = document.querySelector('.list_trac');
 const sendCloseMessage = () => {
   window.parent.postMessage(
     { type: "CLOSE_EXPANDED", payload: {} },
     "*"
   );
 }
-const modal = document.querySelector("mx-modal");
+const modal = root.querySelector("mx-modal");
 setTimeout(() => modal.isOpen = true, 200);
 modal.addEventListener("mxClose", sendCloseMessage);
 /* We have to recreate the close button since we are overriding the default content of the 
 /* header-right slot. */
-const closeButton = document.querySelector(".close-button");
+const closeButton = root.querySelector(".close-button");
 closeButton.addEventListener("click", sendCloseMessage);
 
 /* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
@@ -166,7 +171,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") sendCloseMessage();
 });
 
-const table = document.querySelector("mx-table");
+const table = root.querySelector("mx-table");
 table.columns = [
   { heading: "Listing" },
   { heading: "Status" },
