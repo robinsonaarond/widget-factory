@@ -18,6 +18,7 @@
 const WIDGET_LIBRARY = 'widget_library';
 const root = document.querySelector('.widget_panel');
 
+// Notify parent window of height changes
 const resizeObserver = new ResizeObserver(entries => {
   const height = entries[0].contentRect.height;
   window.parent.postMessage(
@@ -59,7 +60,7 @@ if (addButton) {
   </mx-modal>
 </div>
 
-<%# Expanded Widget Script %>
+<%# Expanded Widget Script (Widget Library) %>
 <script type="module">
 const root = document.querySelector('.widget_panel');
 const sendCloseMessage = () => {
