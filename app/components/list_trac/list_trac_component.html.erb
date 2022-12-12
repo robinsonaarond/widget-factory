@@ -3,10 +3,15 @@
 
 <% unless current_page?(component_named_expanded_path('list_trac')) %>
 <%# Inline Widget %>
-<div class="list_trac inline-widget flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
+<div class="list_trac inline-widget relative flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16">
     <% if @library_mode %>
-      <mx-checkbox checked="<%= @selected %>" label-name="Online Activity" label-class="my-0 subtitle3 select-none"></mx-checkbox>
+      <label class="flex items-center subtitle3">
+        <input type="checkbox" checked="<%= @selected %>" class="appearance-none absolute z-10 inset-0 cursor-pointer" />
+        <span class="icon checkbox-circle mr-10"></span>
+        Online Activity
+        <div class="widget-checked-border absolute inset-0 pointer-events-none border-2 rounded-lg"></div>
+      </label>
     <% else %>
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Online Activity

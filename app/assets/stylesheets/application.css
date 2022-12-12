@@ -16,6 +16,7 @@
 
 .mds {
   --primary: #430098;
+  --secondary: #00bcda;
   --mds-text-btn-text: var(--primary);
   --mds-bg-btn-text-focus: #e5def2;
   --mds-bg-btn-text-hover: #eee8f6;
