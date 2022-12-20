@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class Hurdlr::HurdlrComponent < ViewComponent::Base
+  def initialize(library_mode: false, selected: false)
+    @library_mode = library_mode
+    @selected = selected
+  end
+
   def before_render
-    @data = demo_data
-    # @data = user_vitals
+    @data = @library_mode ? demo_data : user_vitals
   end
 
   def user_vitals

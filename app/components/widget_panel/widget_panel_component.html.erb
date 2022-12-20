@@ -1,0 +1,80 @@
+<link rel="stylesheet" type="text/css" href="/assets/widget_panel/style.css">
+
+<% unless current_page?(component_named_expanded_path) %>
+<%# Inline Widget (My Widgets) %>
+<section class="widget_panel text-primary">
+  <header class="flex items-center justify-between px-8">
+    <p role="heading" aria-level="1" class="my-0 subtitle2">My Widgets</p>
+    <mx-button btn-type="text" icon="icon icon-plus-circle">Add</mx-button>
+  </header>
+  <div class="widget-grid">
+    <%= render Hurdlr::HurdlrComponent.new %>
+    <%= render ListTrac::ListTracComponent.new %>
+  </div>
+</section>
+
+<%# Inline Widget Script (My Widgets) %>
+<script type="module">
+const WIDGET_LIBRARY = 'widget_library';
+const root = document.querySelector('.widget_panel');
+
+// Notify parent window of height changes
+const resizeObserver = new ResizeObserver(entries => {
+  const height = entries[0].contentRect.height;
+  window.parent.postMessage(
+    { type: "RESIZE", payload: { id: 'widget_panel', height } },
+    "*"
+  );
+});
+resizeObserver.observe(root);
+
+const addButton = root.querySelector("mx-button");
+if (addButton) {
+  addButton.addEventListener("click", () => {
+    const url = `${window.location.origin}<%= component_named_expanded_path %>`;
+    window.parent.postMessage(
+      { type: "EXPAND", payload: { url } },
+      "*"
+    );
+  });
+}
+</script>
+
+<% else %>
+<%# Expanded Widget (Widget Library) %>
+<div class="widget_panel w-screen h-screen">
+  <mx-modal large close-on-escape="false">
+    <div slot="header-left">Library</div>
+    <div class="flex justify-between">
+      <div class="flex gap-8 flex-wrap items-center">
+        <mx-button btn-type="simple" dropdown>All Categories</mx-button>
+        <mx-button btn-type="simple" dropdown>All Partners</mx-button>
+      </div>
+      <mx-search placeholder="Search" dense></mx-search>
+    </div>
+    <p role="heading" aria-level="2" class="text-h6 emphasis my-0 mb-16 mt-36 px-8">Partner Widgets</p>
+  <div class="widget-grid">
+    <%= render Hurdlr::HurdlrComponent.new(library_mode: true, selected: true) %>
+    <%= render ListTrac::ListTracComponent.new(library_mode: true, selected: true) %>
+  </div>
+  </mx-modal>
+</div>
+
+<%# Expanded Widget Script (Widget Library) %>
+<script type="module">
+const root = document.querySelector('.widget_panel');
+const sendCloseMessage = () => {
+  window.parent.postMessage(
+    { type: "CLOSE_EXPANDED", payload: {} },
+    "*"
+  );
+}
+const modal = root.querySelector("mx-modal");
+setTimeout(() => modal.isOpen = true, 500);
+modal.addEventListener("mxClose", sendCloseMessage);
+/* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") sendCloseMessage();
+});
+</script>
+<% end %>

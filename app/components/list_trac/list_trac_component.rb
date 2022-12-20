@@ -1,24 +1,34 @@
 # frozen_string_literal: true
 
 class ListTrac::ListTracComponent < ViewComponent::Base
+  def initialize(library_mode: false, selected: false)
+    @library_mode = library_mode
+    @selected = selected
+  end
+
   # rubocop:disable Metrics/MethodLength
   def before_render
-    @token = token
-    # @data = RestClient.post(
-    #   'https://b2b.listtrac.com/api/GetMetricsByOrganization',
-    #   {
-    #     "token": token,
-    #     "viewtype": 'mls',
-    #     "viewtypeID": 'stellar',
-    #     "metric": 'view,inquiry',
-    #     "details": 'true',
-    #     "startdate": '20220909',
-    #     "enddate": '20221123'
-    #   }
-    # )
-    @listings = demo_listings # TODO: only use demo listings for widget library demo
+    @token = token # TODO: Remove once API is working for us
+    @listings = @library_mode ? demo_listings : agent_listings
   end
   # rubocop:enable Metrics/MethodLength
+
+  def agent_listings
+    demo_listings # TODO: Get agent listing data from API
+    # response = RestClient.post(
+    #   "https://b2b.listtrac.com/api/GetMetricsByOrganization",
+    #   {
+    #     token: token,
+    #     viewtype: "mls",
+    #     viewtypeID: "stellar",
+    #     metric: "view,inquiry",
+    #     details: "true",
+    #     startdate: "20220909",
+    #     enddate: "20221123"
+    #   }
+    # )
+    # JSON.parse(response, symbolize_names: true)
+  end
 
   def token
     pass = VendorApiAccess["list_trac"]["password"]
