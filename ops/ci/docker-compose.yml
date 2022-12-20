@@ -1,0 +1,38 @@
+---
+version: '3.9'
+services:
+  widget-factory:
+    build:
+      context: "../../"
+      dockerfile: ops/ci/Dockerfile
+      ssh:
+      - default
+      args:
+        RUBY_VERSION: 3.0.2
+        NODE_MAJOR: '18'
+        NPM_VERSION: 8.19.2
+    env_file:
+    - "../../ops/env/base.env"
+    environment:
+      RAILS_ENV: test
+      CI_NODE_TOTAL: "${BUILDKITE_PARALLEL_JOB_COUNT}"
+      CI_NODE_INDEX: "${BUILDKITE_PARALLEL_JOB}"
+      SECURE_REQUEST_SALT: "${SECURE_REQUEST_SALT}"
+    depends_on:
+      moxi-redis:
+        condition: service_healthy
+      moxi-memcached:
+        condition: service_started
+  moxi-redis:
+    image: redis:6.2-alpine
+    ports:
+    - 6380:6379
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+  moxi-memcached:
+    image: memcached:1.6.17-alpine
+    ports:
+    - 11211:11211

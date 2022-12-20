@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -e
+
+# Help: Setup the widget-factory application i.e., install dependencies and setup the database for development and testing.
+# Help: If there are any pre existing containers and volumes, they will be removed.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev setup
+
+apdev_setup() {
+	local help_link="https://github.com/moxiworks/widget-factory/blob/main/docs/apdev.md"
+
+	if [ ! -f "ops/env/custom.env" ]; then
+		echo "Please run 'apdev add .' at the root of this repo to create the custom.env file"
+		echo -e "\e]8;;$help_link\a$help_link\e]8;;\a"
+		echo ""
+		exit 1
+	fi
+
+  printf "\n== Setting up widget-factory application ==\n"
+
+  containers=$(docker ps -a -q --filter name=widget-factory)
+  if [ -n "$containers" ]; then
+    printf "\n== Removing containers ==\n"
+    docker rm -f $containers
+  fi
+
+  volumes=$(docker volume ls -q --filter name=widget-factory)
+  if [ -n "$volumes" ]; then
+    printf "\n== Removing volumes ==\n"
+    docker volume rm $volumes
+  fi
+
+  # Runs ./bin/setup in the widget-factory container
+  apdev run widget-factory setup
+}
+
+apdev_setup

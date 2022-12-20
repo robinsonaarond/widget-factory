@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+# Help: Runs npm commands in the widget-factory application.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev npm [command] [options]
+# Help:   $ apdev npm install (default)
+# Help:   $ apdev npm update
+# Help:   $ apdev npm add gem_name
+# Help:   $ apdev npm exec [command] [options]
+
+# If no command is provided, default to install
+if [ -z "$1" ]; then
+  set -- install
+fi
+apdev run widget-factory npm "$@"

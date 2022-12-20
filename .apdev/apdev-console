@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+# Help: Open rails console in the widget-factory application.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev console
+
+printf "\n== Opening rails console ==\n"
+apdev run widget-factory rails console

@@ -1,0 +1,41 @@
+env:
+  # these are for multi-stage builds
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  BUILDKIT_PROGRESS: plain
+  ECR_URL: "447351447783.dkr.ecr.us-west-2.amazonaws.com"
+  DOCKER_REPOSITORY: "$ECR_URL/widget-factory"
+  DEPLOY_SERVICE_NAME: widget-factory
+  QA_LATEST_NAME: "qa-latest-deploy"
+  DEPLOY_NAME: "qa-$BUILDKITE_BUILD_NUMBER"
+
+steps:
+  - label: ":docker: Docker Build"
+    plugins:
+      ecr#v1.2.0:
+        login: true
+      docker-compose#v4.5.0:
+        config: ops/ci/docker-compose.yml
+        image-repository: "$DOCKER_REPOSITORY"
+        cache-from: "$DEPLOY_SERVICE_NAME:$DOCKER_REPOSITORY:$QA_LATEST_NAME"
+        build: $DEPLOY_SERVICE_NAME
+        cli-version: 2
+        push:
+          - "$DEPLOY_SERVICE_NAME:$DOCKER_REPOSITORY:$QA_LATEST_NAME"
+          - "$DEPLOY_SERVICE_NAME:$DOCKER_REPOSITORY:$DEPLOY_NAME"
+        args:
+          - BUILDKIT_INLINE_CACHE=1
+    agents:
+      queue: docker-ec2
+
+  - wait
+
+  - label: ':rocket: Deploy Widget Factory to QA'
+    trigger: 'deploy-to-eks'
+    build:
+      message: ":fork: Widget Factory (QA) ${BUILDKITE_MESSAGE}"
+      branch: "master"
+      env:
+        APP: widget-factory
+        ENVIRONMENT: qa
+        TAG: ${DEPLOY_NAME}

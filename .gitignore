@@ -40,3 +40,7 @@
 # Misc
 /config/secreq.yml
 /config/vendor_api_data.yml
+
+#Apdev
+ops/env/custom.env
+.apdev/secrets/widget-factory

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+# Help: Runs system tests in the widget-factory application.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev test-system
+
+printf "\n== Running system tests ==\n"
+
+
+apdev run widget-factory_system_tests rails test:system
+
