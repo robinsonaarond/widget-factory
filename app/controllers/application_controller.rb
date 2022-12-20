@@ -3,8 +3,10 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # This is simply making a profile call and setting it on the session.
-  # We are not checking for session against the CAS yet.
+  # This is simply polling the auth service to make sure there is a valid session.
+  # Other than this, there is no session management in this applicatino.
+  # The assumption is that users need to be logged in to another Moxi entity
+  # which will consime this content.
   def check_valid_session
     if params[:session_id]
 
