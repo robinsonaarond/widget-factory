@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+# Help: Installs the widget-factory application dependencies like, ruby gems, and yarn packages.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev install-deps
+
+apdev_install_deps() {
+  
+  apdev run widget-factory bundle install && 
+		npm install
+}
+
+apdev_install_deps

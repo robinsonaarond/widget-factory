@@ -1,0 +1,23 @@
+---
+service_name: widget-factory
+git_repo: moxiworks/widget-factory
+service_public_port: '30013'
+default_git_branch: main
+production_git_branch: main
+guard_enabled: false
+filebeat_enabled: false
+ruby:
+  enabled: true
+  version: 3.0.2
+  bundler_version: 2.3.26
+  test_framework: minitest
+  cucumber_enabled: false
+  application_server: puma
+node:
+  enabled: true
+  node_version: '18'
+  package_manager: npm
+  npm_version: '8.19.2'
+db:
+prebaked_services: moxi-redis,moxi-memcached
+env_vars: ''

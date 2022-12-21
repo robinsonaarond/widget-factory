@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+# Help: Runs bundle commands in the widget-factory application.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev bundle [command] [options]
+# Help:   $ apdev bundle install (default)
+# Help:   $ apdev bundle update
+# Help:   $ apdev bundle add gem_name
+# Help:   $ apdev bundle exec [command] [options]
+
+# If no command is provided, default to install
+if [ -z "$1" ]; then
+  set -- install
+fi
+apdev run widget-factory bundle "$@"

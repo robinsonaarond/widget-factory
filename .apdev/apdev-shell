@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+# Help: Open bash shell in widget-factory container (with dependencies up)
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev shell
+
+apdev_shell() {
+	printf "\n== Opening shell with dependencies up ==\n"
+	apdev run widget-factory /bin/bash -l
+}
+
+apdev_shell

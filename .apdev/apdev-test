@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+# Help: Runs unit tests in the widget-factory application.
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev test
+
+apdev_test() {
+	printf "\n== Running unit tests ==\n"
+
+
+apdev run widget-factory rails test
+
+}
+
+apdev_test

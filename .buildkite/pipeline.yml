@@ -1,0 +1,94 @@
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  BUILDKIT_PROGRESS: plain
+
+  SERVICE: "widget-factory"
+  ECR_URL: "447351447783.dkr.ecr.us-west-2.amazonaws.com"
+  DOCKER_REPOSITORY: "$ECR_URL/$SERVICE"
+  CI_NAME: "ci-$BUILDKITE_BUILD_NUMBER"
+  CACHED_IMAGE: "$DOCKER_REPOSITORY:ci-latest"
+  DEPLOY_NAME: "main-$BUILDKITE_BUILD_NUMBER"
+  MASTER_LATEST_NAME: "main-latest"
+
+steps:
+  - name: ":docker: Build"
+    agents:
+      queue: docker-ec2
+    plugins:
+      ecr#v2.5.0:
+        login: true
+        region: us-west-2
+      docker-compose#v4.7.0:
+        config: ops/ci/docker-compose.yml
+        cli-version: 2
+        build: "$SERVICE"
+        tty: false
+        image-repository: "$DOCKER_REPOSITORY"
+        image-name: "$CI_NAME"
+        cache-from:
+          - "$SERVICE:$DOCKER_REPOSITORY:$BUILDKITE_BRANCH-latest"
+          - "$SERVICE:$DOCKER_REPOSITORY:$MASTER_LATEST_NAME"
+        push: "$SERVICE:$DOCKER_REPOSITORY:$BUILDKITE_BRANCH-latest"
+        args:
+          - BUILDKIT_INLINE_CACHE=1
+          - GIT_HASH=${BUILDKITE_COMMIT}
+          - GIT_BRANCH=${BUILDKITE_BRANCH}
+
+  - wait
+
+
+
+
+  - name: ":test_tube: Run tests"
+    agents:
+      queue: docker-ec2
+    parallelism: 1
+    command: "./ops/bin/run-tests.sh"
+    artifact_paths:
+      - "report.xml"
+    env:
+      RAILS_ENV: test
+    plugins:
+      ecr#v2.5.0:
+        login: true
+        region: us-west-2
+      docker-compose#v4.7.0:
+        config: ops/ci/docker-compose.yml
+        cli-version: 2
+        run: "$SERVICE"
+        tty: false
+        env:
+          - BUILDKITE_JOB_ID
+
+
+
+
+  - wait
+
+
+  - label: ":docker: Push cached image"
+    plugins:
+      ecr#v2.5.0:
+        login: true
+      docker-compose#v4.7.0:
+        config: ops/ci/docker-compose.yml
+        cli-version: 2
+        push:
+          - "$SERVICE:$CACHED_IMAGE"
+          - "$SERVICE:$DOCKER_REPOSITORY:$DEPLOY_NAME"
+    agents:
+      queue: docker-ec2
+    branches: "main"
+
+  - wait
+
+  - label: ':rocket: Deploy to Prod'
+    trigger: 'deploy-to-eks'
+    build:
+      message: ":fork: Widget Factory (Prod) ${BUILDKITE_MESSAGE}"
+      branch: "master"
+      env:
+        APP: widget-factory
+        ENVIRONMENT: production
+        TAG: ${DEPLOY_NAME}
