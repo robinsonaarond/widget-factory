@@ -30,7 +30,7 @@ steps:
 
   - wait
 
-  - label: ':rocket: Deploy Widget Factory to QA'
+  - label: ':rocket: Deploy to QA'
     trigger: 'deploy-to-eks'
     build:
       message: ":fork: Widget Factory (QA) ${BUILDKITE_MESSAGE}"

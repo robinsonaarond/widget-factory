@@ -8,6 +8,7 @@ env:
   DOCKER_REPOSITORY: "$ECR_URL/$SERVICE"
   CI_NAME: "ci-$BUILDKITE_BUILD_NUMBER"
   CACHED_IMAGE: "$DOCKER_REPOSITORY:ci-latest"
+  DEPLOY_NAME: "main-$BUILDKITE_BUILD_NUMBER"
   MASTER_LATEST_NAME: "main-latest"
 
 steps:
@@ -75,6 +76,19 @@ steps:
         cli-version: 2
         push:
           - "$SERVICE:$CACHED_IMAGE"
+          - "$SERVICE:$DOCKER_REPOSITORY:$DEPLOY_NAME"
     agents:
       queue: docker-ec2
     branches: "main"
+
+  - wait
+
+  - label: ':rocket: Deploy to Prod'
+    trigger: 'deploy-to-eks'
+    build:
+      message: ":fork: Widget Factory (Prod) ${BUILDKITE_MESSAGE}"
+      branch: "master"
+      env:
+        APP: widget-factory
+        ENVIRONMENT: production
+        TAG: ${DEPLOY_NAME}
