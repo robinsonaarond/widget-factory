@@ -45,18 +45,10 @@ if (addButton) {
 <div class="widget_panel w-screen h-screen">
   <mx-modal large close-on-escape="false">
     <div slot="header-left">Library</div>
-    <div class="flex justify-between">
-      <div class="flex gap-8 flex-wrap items-center">
-        <mx-button btn-type="simple" dropdown>All Categories</mx-button>
-        <mx-button btn-type="simple" dropdown>All Partners</mx-button>
-      </div>
-      <mx-search placeholder="Search" dense></mx-search>
+    <div class="widget-grid">
+      <%= render Hurdlr::HurdlrComponent.new(library_mode: true, selected: true) %>
+      <%= render ListTrac::ListTracComponent.new(library_mode: true, selected: true) %>
     </div>
-    <p role="heading" aria-level="2" class="text-h6 emphasis my-0 mb-16 mt-36 px-8">Partner Widgets</p>
-  <div class="widget-grid">
-    <%= render Hurdlr::HurdlrComponent.new(library_mode: true, selected: true) %>
-    <%= render ListTrac::ListTracComponent.new(library_mode: true, selected: true) %>
-  </div>
   </mx-modal>
 </div>
 

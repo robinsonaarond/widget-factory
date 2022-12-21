@@ -53,7 +53,7 @@
           <span class="icon icon-dots-three-vertical"></span>
         </button>
         <mx-menu>
-          <mx-menu-item>Change settings</mx-menu-item>
+          <mx-menu-item>Modify settings</mx-menu-item>
           <mx-menu-item>Remove widget</mx-menu-item>
         </mx-menu>
       <% end %>
@@ -84,7 +84,7 @@ const menuItems = root.querySelectorAll("mx-menu-item");
 if (menuItems.length) {
   menuItems[0].addEventListener("click", () => {
     window.parent.postMessage(
-      { type: "CHANGE_SETTINGS", payload: {} },
+      { type: "MODIFY_SETTINGS", payload: {} },
       "*"
     );
   });
