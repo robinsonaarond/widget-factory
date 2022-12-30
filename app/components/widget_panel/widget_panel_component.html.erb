@@ -8,8 +8,9 @@
     <mx-button btn-type="text" icon="icon icon-plus-circle">Add</mx-button>
   </header>
   <div class="widget-grid">
-    <%= render Hurdlr::HurdlrComponent.new %>
-    <%= render ListTrac::ListTracComponent.new %>
+    <% @user_widgets.each do |widget| %>
+      <%= render Object.const_get("#{widget.camelize}::#{widget.camelize}Component").new %>
+    <% end %>
   </div>
 </section>
 
@@ -45,9 +46,37 @@ if (addButton) {
 <div class="widget_panel w-screen h-screen">
   <mx-modal large close-on-escape="false">
     <div slot="header-left">Library</div>
-    <div class="widget-grid">
-      <%= render Hurdlr::HurdlrComponent.new(library_mode: true, selected: true) %>
-      <%= render ListTrac::ListTracComponent.new(library_mode: true, selected: true) %>
+    <div class="widget-library-grid">
+      <% @active_widgets.each do |widget| %>
+        <div data-widget="<%= widget %>" class="px-16 pt-16 pb-24 bg-white rounded-lg">
+          <div class="px-8 mb-20">
+            <mx-button btn-type="text" icon="icon icon-plus-circle" class="add-button <%= @user_widgets.include?(widget) ? "hidden" : "" %>">
+              <span class="button-text">Add widget</span>
+            </mx-button>
+            <div class="remove-button-wrapper relative <%= @user_widgets.include?(widget) ? "" : "hidden" %>">
+              <!-- It was cleaner to do this with two buttons and CSS instead of JavaScript. -->
+              <!-- Remove button that is hovered/focused/active.  -->
+              <mx-button btn-type="text" icon="icon icon-minus-circle" class="remove-button absolute left-0 opacity-0 hover:opacity-100 focus-within:opacity-100">
+                Remove from Dashboard
+              </mx-button>
+              <!-- Not hovered/focused/active -->
+              <mx-button btn-type="text" icon="icon icon-checkbox-circle" class="added-button pointer-events-none" disabled>
+                Added to Dashboard
+              </mx-button>
+            </div>
+          </div>
+          <%= render Object.const_get("#{widget.camelize}::#{widget.camelize}Component").new(library_mode: true) %>
+          <div class="px-8 mt-20">
+            <p role="heading" aria-level="3" class="overline2 my-0 mb-8">
+              Description
+            </p>
+            <p class="text-4 my-0">
+              <%# TODO: Use widget description set by admin %>
+              View and track online activity for your listings.
+            </p>
+          </div>
+        </div>
+      <% end %>
     </div>
   </mx-modal>
 </div>
@@ -67,6 +96,40 @@ modal.addEventListener("mxClose", sendCloseMessage);
 /* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") sendCloseMessage();
+});
+
+const addButtons = root.querySelectorAll(".add-button");
+addButtons.forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const widget = e.target.closest('[data-widget]').dataset.widget;
+    // TODO: Add widget to user's dashboard
+    // Show "Adding widget" button
+    const mxButton = e.target.closest('mx-button');
+    mxButton.icon = 'icon icon-arrows-clockwise';
+    mxButton.querySelector('.button-text').innerText = 'Adding widget'
+    mxButton.disabled = true;
+    setTimeout(() => {
+      // Replace add button with remove button
+      mxButton.classList.add('hidden')
+      mxButton.icon = 'icon icon-plus-circle';
+      mxButton.querySelector('.button-text').innerText = 'Add widget'
+      mxButton.disabled = false;
+      const removeButtonWrapper = mxButton.parentElement.querySelector('.remove-button-wrapper');
+      removeButtonWrapper.classList.remove('hidden');
+    }, 500)
+  });
+});
+const removeButtons = root.querySelectorAll(".remove-button");
+removeButtons.forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const widget = e.target.closest('[data-widget]').dataset.widget;
+    // TODO: Remove widget
+    const removeButtonWrapper = e.target.closest('.remove-button-wrapper');
+    // Replace remove button with add button
+    removeButtonWrapper.classList.add('hidden');
+    const addButton = removeButtonWrapper.parentElement.querySelector('.add-button');
+    addButton.classList.remove('hidden');
+  });
 });
 </script>
 <% end %>

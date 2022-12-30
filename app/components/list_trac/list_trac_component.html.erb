@@ -3,20 +3,11 @@
 
 <% unless current_page?(component_named_expanded_path('list_trac')) %>
 <%# Inline Widget %>
-<div class="list_trac inline-widget relative flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
-  <header class="flex items-center min-h-48 bg-white border-b px-16">
-    <% if @library_mode %>
-      <label class="flex items-center subtitle3">
-        <input type="checkbox" checked="<%= @selected %>" class="appearance-none absolute z-10 inset-0 cursor-pointer" />
-        <span class="icon checkbox-circle mr-10"></span>
-        Online Activity
-        <div class="widget-checked-border absolute inset-0 pointer-events-none border-2 rounded-lg"></div>
-      </label>
-    <% else %>
+<div data-widget="list_trac" class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
+  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Online Activity
     </p>
-    <% end %>
   </header>
   <div class="flex-1 p-16 bg-gray">
     <table class="w-full rounded-xl bg-white shadow-1" cellspacing="0">
@@ -25,7 +16,6 @@
           <th class="text-left pl-24">Address</th>
           <th>Views</th>
           <th>Leads</th>
-          <th><span class="sr-only">Action</span></th>
         </tr>
       </thead>
       <tbody class="caption2">
@@ -34,7 +24,6 @@
           <td><%= listing[:address] %></td>
           <td><%= listing[:views] %></td>
           <td><%= listing[:leads] %></td>
-          <td><i class="icon icon-file-plus"></i></td>
         </tr>
         <% end %>
       </tbody>
@@ -43,8 +32,10 @@
   <footer
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
-    <img src="/assets/list_trac/logo.png" width="64" height="30" />
-    <div class="flex items-center space-x-8">
+    <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
+      <img src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
+    </a>
+    <div class="actions flex items-center space-x-8">
       <% unless @library_mode %>
         <button class="expand-button flex items-center cursor-pointer">
           <span class="icon icon-grow"></span>
