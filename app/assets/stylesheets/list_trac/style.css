@@ -11,11 +11,6 @@
   text-align: left;
 }
 
-.list_trac td:last-child {
-  padding: 0 0.5rem;
-  vertical-align: bottom;
-}
-
 .list_trac th {
   font-size: 11px;
   font-weight: 600;

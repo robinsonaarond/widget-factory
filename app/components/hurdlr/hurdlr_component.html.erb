@@ -1,19 +1,10 @@
 <link rel="stylesheet" type="text/css" href="/assets/hurdlr/style.css">
 
-<div class="hurdlr inline-widget relative flex flex-col text-primary shadow-3 rounded-lg overflow-hidden m-8">
-  <header class="flex items-center min-h-48 bg-white border-b px-16">
-    <% if @library_mode %>
-      <label class="flex items-center subtitle3">
-        <input type="checkbox" checked="<%= @selected %>" class="appearance-none absolute z-10 inset-0 cursor-pointer" />
-        <span class="icon checkbox-circle mr-10"></span>
-        Profit + Loss
-        <div class="widget-checked-border absolute inset-0 pointer-events-none border-2 rounded-lg"></div>
-      </label>
-    <% else %>
+<div data-widget="hurdlr" class="hurdlr inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
+  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Profit + Loss
     </p>
-    <% end %>
   </header>
   <div class="flex-1 subtitle4 p-16">
     <table class="w-full" cellspacing="0">
@@ -30,8 +21,10 @@
   <footer
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
-    <img src="/assets/hurdlr/logo.png" width="64" height="30" />
-    <div class="flex items-center">
+    <a href="https://prod-integration.hurdlr.com/saml/assertion/stellar">
+      <img src="/assets/hurdlr/logo.png" width="64" height="30" alt="Hurdlr" />
+    </a>
+    <div class="actions flex items-center">
       <% unless @library_mode %>
         <button class="menu-button flex items-center cursor-pointer">
           <span class="icon icon-dots-three-vertical"></span>

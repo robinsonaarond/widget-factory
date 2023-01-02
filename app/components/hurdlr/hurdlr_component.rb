@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class Hurdlr::HurdlrComponent < ViewComponent::Base
-  def initialize(library_mode: false, selected: false)
+  def initialize(library_mode: false)
     @library_mode = library_mode
-    @selected = selected
   end
 
   def before_render
