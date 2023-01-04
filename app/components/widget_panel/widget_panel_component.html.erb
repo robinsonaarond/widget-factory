@@ -11,12 +11,6 @@
     Activate the reorder button and use the arrow keys to reorder the list. Press Escape or Tab to cancel the reordering.
   </p>
   <ol class="widget-grid" aria-labelledby="widgets-heading">
-    <li data-widget="list_trac">
-      <%= render ListTrac::ListTracComponent.new %>
-    </li>
-    <li data-widget="list_trac">
-      <%= render ListTrac::ListTracComponent.new %>
-    </li>
     <% @user_widgets.each do |widget| %>
       <li data-widget="<%= widget %>"><%= render Object.const_get("#{widget.camelize}::#{widget.camelize}Component").new %></li>
     <% end %>
