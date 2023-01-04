@@ -112,13 +112,13 @@ if (menu && menuButton) menu.anchorEl = menuButton;
 const menuItems = root.querySelectorAll("mx-menu-item");
 if (menuItems.length) {
 
-  menuItems[1].addEventListener("click", () => {
+  menuItems[0].addEventListener("click", () => {
     window.parent.postMessage(
       { type: "MODIFY_SETTINGS", payload: {} },
       "*"
     );
   });
-  menuItems[2].addEventListener("click", () => {
+  menuItems[1].addEventListener("click", () => {
     window.parent.postMessage(
       { type: "REMOVE", payload: {} },
       "*"
