@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/assets/hurdlr/style.css">
 
-<div data-widget="hurdlr" class="hurdlr inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
+<div class="hurdlr inline-widget relative flex flex-col border bg-white text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
     <p role="heading" aria-level="1" class="my-0 subtitle3">
       Profit + Loss
@@ -26,7 +26,7 @@
     </a>
     <div class="actions flex items-center">
       <% unless @library_mode %>
-        <button class="menu-button flex items-center cursor-pointer">
+        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
           <span class="icon icon-dots-three-vertical"></span>
         </button>
         <mx-menu>
@@ -56,7 +56,8 @@ const tbody = root.querySelector('tbody');
 // Generate the table rows
 rows.forEach(row => {
   const tr = document.createElement('tr');
-  const percent = row.value / <%= @data[:revenue] %> * 100;
+  let percent = row.value / <%= @data[:revenue] %> * 100;
+  if (isNaN(percent)) percent = 0;
   tr.innerHTML = `
     <td aria-labelledby="metric-heading" id="${row.key}-label">
       <div class="relative bg-bar overflow-hidden rounded h-32">
@@ -111,13 +112,13 @@ if (menu && menuButton) menu.anchorEl = menuButton;
 const menuItems = root.querySelectorAll("mx-menu-item");
 if (menuItems.length) {
 
-  menuItems[1].addEventListener("click", () => {
+  menuItems[0].addEventListener("click", () => {
     window.parent.postMessage(
       { type: "MODIFY_SETTINGS", payload: {} },
       "*"
     );
   });
-  menuItems[2].addEventListener("click", () => {
+  menuItems[1].addEventListener("click", () => {
     window.parent.postMessage(
       { type: "REMOVE", payload: {} },
       "*"

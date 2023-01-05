@@ -3,9 +3,9 @@
 
 <% unless current_page?(component_named_expanded_path('list_trac')) %>
 <%# Inline Widget %>
-<div data-widget="list_trac" class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
+<div class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
-    <p role="heading" aria-level="1" class="my-0 subtitle3">
+    <p role="heading" aria-level="2" class="my-0 subtitle3">
       Online Activity
     </p>
   </header>
@@ -37,10 +37,10 @@
     </a>
     <div class="actions flex items-center space-x-8">
       <% unless @library_mode %>
-        <button class="expand-button flex items-center cursor-pointer">
+        <button class="expand-button flex items-center cursor-pointer" aria-label="Expand widget">
           <span class="icon icon-grow"></span>
         </button>
-        <button class="menu-button flex items-center cursor-pointer">
+        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
           <span class="icon icon-dots-three-vertical"></span>
         </button>
         <mx-menu>
