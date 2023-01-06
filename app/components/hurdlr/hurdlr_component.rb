@@ -6,6 +6,7 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
   end
 
   def before_render
+    @library_mode ||= params[:library_mode]
     @data = @library_mode ? demo_data : user_vitals
   end
 
