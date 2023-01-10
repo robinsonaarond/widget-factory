@@ -7,6 +7,7 @@ class ListTrac::ListTracComponent < ViewComponent::Base
 
   # rubocop:disable Metrics/MethodLength
   def before_render
+    @library_mode ||= params[:library_mode]
     @token = token # TODO: Remove once API is working for us
     @listings = @library_mode ? demo_listings : agent_listings
   end

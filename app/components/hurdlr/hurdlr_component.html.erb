@@ -2,7 +2,7 @@
 
 <div class="hurdlr inline-widget relative flex flex-col border bg-white text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
-    <p role="heading" aria-level="1" class="my-0 subtitle3">
+    <p id="heading" role="heading" aria-level="1" class="my-0 subtitle3">
       Profit + Loss
     </p>
   </header>
@@ -21,9 +21,13 @@
   <footer
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
-    <a href="https://prod-integration.hurdlr.com/saml/assertion/stellar">
-      <img src="/assets/hurdlr/logo.png" width="64" height="30" alt="Hurdlr" />
-    </a>
+    <% unless @library_mode %>
+      <a href="https://prod-integration.hurdlr.com/saml/assertion/stellar">
+    <% end %>
+    <img id="logo" src="/assets/hurdlr/logo.png" width="64" height="30" alt="Hurdlr" />
+    <% unless @library_mode %>
+      </a>
+    <% end %>
     <div class="actions flex items-center">
       <% unless @library_mode %>
         <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
@@ -125,4 +129,13 @@ if (menuItems.length) {
     );
   });
 }
+
+window.addEventListener("message", (e) => {
+  if (e.data.type === "UPDATE_PREVIEW") {
+    const { heading, logo } = e.data.payload;
+    if (heading) root.querySelector("#heading").innerText = heading;
+    if (!root.querySelector("#logo").dataset.src) root.querySelector("#logo").dataset.src = root.querySelector("#logo").src;
+    root.querySelector("#logo").src = logo || root.querySelector("#logo").dataset.src;
+  }
+});
 </script>

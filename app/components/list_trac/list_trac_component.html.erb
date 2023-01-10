@@ -5,7 +5,7 @@
 <%# Inline Widget %>
 <div class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
-    <p role="heading" aria-level="2" class="my-0 subtitle3">
+    <p id="heading" role="heading" aria-level="2" class="my-0 subtitle3">
       Online Activity
     </p>
   </header>
@@ -32,9 +32,13 @@
   <footer
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
-    <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
-      <img src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
-    </a>
+    <% unless @library_mode %>
+      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
+    <% end %>
+    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
+    <% unless @library_mode %>
+      </a>
+    <% end %>
     <div class="actions flex items-center space-x-8">
       <% unless @library_mode %>
         <button class="expand-button flex items-center cursor-pointer" aria-label="Expand widget">
@@ -86,6 +90,15 @@ if (menuItems.length) {
     );
   });
 }
+
+window.addEventListener("message", (e) => {
+  if (e.data.type === "UPDATE_PREVIEW") {
+    const { heading, logo } = e.data.payload;
+    if (heading) root.querySelector("#heading").innerText = heading;
+    if (!root.querySelector("#logo").dataset.src) root.querySelector("#logo").dataset.src = root.querySelector("#logo").src;
+    root.querySelector("#logo").src = logo || root.querySelector("#logo").dataset.src;
+  }
+});
 </script>
 
 <% else %>
