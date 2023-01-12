@@ -157,7 +157,11 @@ const sendCloseMessage = () => {
   );
 }
 const modal = root.querySelector("mx-modal");
-setTimeout(() => modal.isOpen = true, 400);
+const observer = new MutationObserver(mutations => {
+  requestAnimationFrame(() => modal.isOpen = true);
+  observer.disconnect();
+})
+observer.observe(root, { subtree: true, childList: true });
 modal.addEventListener("mxClose", sendCloseMessage);
 /* We have to recreate the close button since we are overriding the default content of the 
 /* header-right slot. */
@@ -225,7 +229,11 @@ const sendCloseMessage = () => {
   );
 }
 const modal = root.querySelector("mx-modal");
-setTimeout(() => modal.isOpen = true, 400);
+const observer = new MutationObserver(mutations => {
+  requestAnimationFrame(() => modal.isOpen = true);
+  observer.disconnect();
+})
+observer.observe(root, { subtree: true, childList: true });
 modal.addEventListener("mxClose", sendCloseMessage);
 
 /* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
