@@ -1,107 +1,7 @@
 <!-- Token: <%= @token %> -->
 <link rel="stylesheet" type="text/css" href="/assets/list_trac/style.css">
 
-<% if current_page?(component_named_default_path('list_trac')) %>
-<%# Inline Widget %>
-<div class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
-  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
-    <p id="heading" role="heading" aria-level="2" class="my-0 subtitle3">
-      <%= @heading %>
-    </p>
-  </header>
-  <div class="flex-1 p-16 bg-gray">
-    <table class="w-full rounded-xl bg-white shadow-1" cellspacing="0">
-      <thead class="h-32">
-        <tr>
-          <th class="text-left pl-24">Address</th>
-          <th>Views</th>
-          <th>Leads</th>
-        </tr>
-      </thead>
-      <tbody class="caption2">
-        <% @listings.each do |listing| %>
-        <tr>
-          <td><%= listing[:address] %></td>
-          <td><%= listing[:views] %></td>
-          <td><%= listing[:leads] %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  <footer
-    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
-  >
-    <% unless @library_mode %>
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
-    <% end %>
-    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
-    <% unless @library_mode %>
-      </a>
-    <% end %>
-    <div class="actions flex items-center space-x-8">
-      <% unless @library_mode %>
-        <button class="expand-button flex items-center cursor-pointer" aria-label="Expand widget">
-          <span class="icon icon-grow"></span>
-        </button>
-        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
-          <span class="icon icon-dots-three-vertical"></span>
-        </button>
-        <mx-menu>
-          <mx-menu-item>Modify settings</mx-menu-item>
-          <mx-menu-item>Remove widget</mx-menu-item>
-        </mx-menu>
-      <% end %>
-    </div>
-  </footer>
-</div>
-
-<%# Inline Widget Script %>
-<script type="module">
-const root = document.querySelector('.list_trac');
-const menu = root.querySelector("mx-menu");
-const menuButton = root.querySelector(".menu-button");
-if (menu && menuButton) menu.anchorEl = menuButton;
-
-const expandButton = root.querySelector(".expand-button");
-if (expandButton) {
-  expandButton.addEventListener("click", () => {
-    const { origin, pathname, search } = window.location;
-    const url = `${window.location.origin}<%= component_named_expanded_path('list_trac', params[:session_id]) %>`;
-    window.parent.postMessage(
-      { type: "EXPAND", payload: { url } },
-      "*"
-    );
-  });
-}
-
-const menuItems = root.querySelectorAll("mx-menu-item");
-if (menuItems.length) {
-  menuItems[0].addEventListener("click", () => {
-    window.parent.postMessage(
-      { type: "MODIFY_SETTINGS", payload: {} },
-      "*"
-    );
-  });
-  menuItems[1].addEventListener("click", () => {
-    window.parent.postMessage(
-      { type: "REMOVE", payload: {} },
-      "*"
-    );
-  });
-}
-
-window.addEventListener("message", (e) => {
-  if (e.data.type === "UPDATE_PREVIEW") {
-    const { heading, logo } = e.data.payload;
-    if (heading) root.querySelector("#heading").innerText = heading;
-    if (!root.querySelector("#logo").dataset.src) root.querySelector("#logo").dataset.src = root.querySelector("#logo").src;
-    root.querySelector("#logo").src = logo || root.querySelector("#logo").dataset.src;
-  }
-});
-</script>
-
-<% elsif current_page?(component_named_expanded_path('list_trac')) %>
+<% if current_page?(component_named_expanded_path('list_trac')) %>
 
 <%# Expanded Widget %>
 <div class="list_trac w-screen h-screen">
@@ -239,6 +139,107 @@ modal.addEventListener("mxClose", sendCloseMessage);
 /* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") sendCloseMessage();
+});
+</script>
+
+<% else %>
+
+<%# Inline Widget %>
+<div class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
+  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
+    <p id="heading" role="heading" aria-level="2" class="my-0 subtitle3">
+      <%= @heading %>
+    </p>
+  </header>
+  <div class="flex-1 p-16 bg-gray">
+    <table class="w-full rounded-xl bg-white shadow-1" cellspacing="0">
+      <thead class="h-32">
+        <tr>
+          <th class="text-left pl-24">Address</th>
+          <th>Views</th>
+          <th>Leads</th>
+        </tr>
+      </thead>
+      <tbody class="caption2">
+        <% @listings.each do |listing| %>
+        <tr>
+          <td><%= listing[:address] %></td>
+          <td><%= listing[:views] %></td>
+          <td><%= listing[:leads] %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <footer
+    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
+  >
+    <% unless @library_mode %>
+      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
+    <% end %>
+    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
+    <% unless @library_mode %>
+      </a>
+    <% end %>
+    <div class="actions flex items-center space-x-8">
+      <% unless @library_mode %>
+        <button class="expand-button flex items-center cursor-pointer" aria-label="Expand widget">
+          <span class="icon icon-grow"></span>
+        </button>
+        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
+          <span class="icon icon-dots-three-vertical"></span>
+        </button>
+        <mx-menu>
+          <mx-menu-item>Modify settings</mx-menu-item>
+          <mx-menu-item>Remove widget</mx-menu-item>
+        </mx-menu>
+      <% end %>
+    </div>
+  </footer>
+</div>
+
+<%# Inline Widget Script %>
+<script type="module">
+const root = document.querySelector('.list_trac');
+const menu = root.querySelector("mx-menu");
+const menuButton = root.querySelector(".menu-button");
+if (menu && menuButton) menu.anchorEl = menuButton;
+
+const expandButton = root.querySelector(".expand-button");
+if (expandButton) {
+  expandButton.addEventListener("click", () => {
+    const { origin, pathname, search } = window.location;
+    const url = `${window.location.origin}<%= component_named_expanded_path('list_trac', params[:session_id]) %>`;
+    window.parent.postMessage(
+      { type: "EXPAND", payload: { url } },
+      "*"
+    );
+  });
+}
+
+const menuItems = root.querySelectorAll("mx-menu-item");
+if (menuItems.length) {
+  menuItems[0].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "MODIFY_SETTINGS", payload: {} },
+      "*"
+    );
+  });
+  menuItems[1].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "REMOVE", payload: {} },
+      "*"
+    );
+  });
+}
+
+window.addEventListener("message", (e) => {
+  if (e.data.type === "UPDATE_PREVIEW") {
+    const { heading, logo } = e.data.payload;
+    if (heading) root.querySelector("#heading").innerText = heading;
+    if (!root.querySelector("#logo").dataset.src) root.querySelector("#logo").dataset.src = root.querySelector("#logo").src;
+    root.querySelector("#logo").src = logo || root.querySelector("#logo").dataset.src;
+  }
 });
 </script>
 <% end %>
