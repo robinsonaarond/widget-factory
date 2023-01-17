@@ -93,4 +93,5 @@ Rails.application.configure do
 
   config.base_profile_service_url = "https://svc.moxiworks.com/service/profile/v3/nucleus"
   config.auth_service_url = "https://svc.moxiworks.com/service/v1/auth"
+  config.listing_service_url = "https://svc.moxiworks.com/service/v1/listing"
 end

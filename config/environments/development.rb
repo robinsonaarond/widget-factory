@@ -70,4 +70,5 @@ Rails.application.configure do
 
   config.base_profile_service_url = "https://svc-devint.moxiworks.com/service/profile/v3/nucleus"
   config.auth_service_url = "https://svc-devint.moxiworks.com/service/v1/auth"
+  config.listing_service_url = "https://svc-devint.moxiworks.com/service/v1/listing"
 end
