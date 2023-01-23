@@ -7,14 +7,26 @@
     <p id="widgets-heading" role="heading" aria-level="1" class="my-0 subtitle2">My Widgets</p>
     <mx-button btn-type="text" icon="icon icon-plus-circle">Add</mx-button>
   </header>
-  <p id="reorder-help" class="sr-only">
-    Activate the reorder button and use the arrow keys to reorder the list. Press Escape or Tab to cancel the reordering.
-  </p>
-  <ol class="widget-grid" aria-labelledby="widgets-heading">
-    <% @user_widgets.each do |widget| %>
-      <li data-widget="<%= widget %>"><%= render Object.const_get("#{widget.camelize}::#{widget.camelize}Component").new %></li>
-    <% end %>
-  </ol>
+  <% if @user_widget_components.any? %>
+    <p id="reorder-help" class="sr-only">
+      Activate the reorder button and use the arrow keys to reorder the list. Press Escape or Tab to cancel the reordering.
+    </p>
+    <ol class="widget-grid" aria-labelledby="widgets-heading">
+      <% @user_widget_components.each do |widget| %>
+        <li data-widget="<%= widget %>"><%= render Object.const_get("#{widget.camelize}::#{widget.camelize}Component").new %></li>
+      <% end %>
+    </ol>
+  <% else %>
+    <div class="text-center">
+      <div class="text-h5 my-0 mt-24 mb-8">
+        No widgets to show yet
+      </div>
+      <div class="mb-16">
+        Widgets offer a convenient pulse check of your real estate ecosystem by surfacing essential activity and insights right from your dashboard. Select “Add” to get started.
+      </div>
+      <%= image_tag "empty-state.svg", alt: "", role: "presentation", class: "mx-auto", style: "width: 200px;" %>
+    </div>
+  <% end %>
 </section>
 
 <%# Inline Widget Script (My Widgets) %>
@@ -251,10 +263,10 @@ function getPointer(e) {
       <% @active_widgets.each do |widget| %>
         <div data-widget="<%= widget %>" class="px-16 pt-16 pb-24 bg-white rounded-lg">
           <div class="px-8 mb-20">
-            <mx-button btn-type="text" icon="icon icon-plus-circle" class="add-button <%= @user_widgets.include?(widget) ? "hidden" : "" %>">
+            <mx-button btn-type="text" icon="icon icon-plus-circle" class="add-button <%= @user_widget_components.include?(widget.component) ? "hidden" : "" %>">
               <span class="button-text">Add widget</span>
             </mx-button>
-            <div class="remove-button-wrapper relative <%= @user_widgets.include?(widget) ? "" : "hidden" %>">
+            <div class="remove-button-wrapper relative <%= @user_widget_components.include?(widget.component) ? "" : "hidden" %>">
               <!-- It was cleaner to do this with two buttons and CSS instead of JavaScript. -->
               <!-- Remove button that is hovered/focused/active.  -->
               <mx-button btn-type="text" icon="icon icon-minus-circle" class="remove-button absolute left-0 opacity-0 hover:opacity-100 focus-within:opacity-100">
@@ -266,14 +278,13 @@ function getPointer(e) {
               </mx-button>
             </div>
           </div>
-          <%= render Object.const_get("#{widget.camelize}::#{widget.camelize}Component").new(library_mode: true) %>
+          <%= render Object.const_get("#{widget.component.camelize}::#{widget.component.camelize}Component").new(library_mode: true) %>
           <div class="px-8 mt-20">
             <p role="heading" aria-level="3" class="overline2 my-0 mb-8">
               Description
             </p>
             <p class="text-4 my-0">
-              <%# TODO: Use widget description set by admin %>
-              View and track online activity for your listings.
+              <%= widget.description %>
             </p>
           </div>
         </div>

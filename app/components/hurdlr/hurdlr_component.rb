@@ -8,7 +8,7 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
   def before_render
     @library_mode ||= params[:library_mode]
     @data = @library_mode ? demo_data : user_vitals
-    @heading = "Profit + Loss"
+    @widget = Widget.find_by(component: "hurdlr")
   end
 
   def user_vitals
