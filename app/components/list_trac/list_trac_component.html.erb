@@ -40,8 +40,8 @@
       </div>
     </mx-table>
     <div slot="footer-left">
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
-        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="ListTrac" />
+      <a href="<%= @widget.logo_link_url %>">
+        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="<%= @widget.partner %>" />
       </a>
     </div>
   </mx-modal>
@@ -108,8 +108,8 @@ table.columns = [
       </mx-select>
     </div>
     <div slot="footer-left">
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
-        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="ListTrac" />
+      <a href="<%= @widget.logo_link_url %>">
+        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="<%= @widget.partner %>" />
       </a>
     </div>
     <div slot="footer-right">
@@ -175,9 +175,9 @@ document.addEventListener("keydown", (e) => {
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
     <% unless @library_mode %>
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
+      <a href="<%= @widget.logo_link_url %>">
     <% end %>
-    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
+    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="<%= @widget.partner %>" />
     <% unless @library_mode %>
       </a>
     <% end %>
