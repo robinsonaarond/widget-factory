@@ -6,7 +6,7 @@
 <%# Expanded Widget %>
 <div class="list_trac w-screen h-screen">
   <mx-modal large close-on-escape="false">
-    <div slot="header-left"><%= @heading %></div>
+    <div slot="header-left"><%= @widget.name %></div>
     <div slot="header-right" class="flex items-center space-x-16">
       <mx-icon-button href="<%= component_named_settings_path %>" icon="text-link mds-gear"></mx-icon-button>
       <mx-button class="close-button" btn-type="text">Close</mx-button>
@@ -40,8 +40,8 @@
       </div>
     </mx-table>
     <div slot="footer-left">
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
-        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="ListTrac" />
+      <a href="<%= @widget.logo_link_url %>">
+        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="<%= @widget.partner %>" />
       </a>
     </div>
   </mx-modal>
@@ -88,7 +88,7 @@ table.columns = [
 <%# Settings %>
 <div class="list_trac w-screen h-screen">
   <mx-modal close-on-escape="false">
-    <div slot="header-left"><%= @heading %> | Settings</div>
+    <div slot="header-left"><%= @widget.name %> | Settings</div>
     <div slot="header-right"></div>
     <div class="settings-inner">
       <mx-select label="Default display" class="mb-24">
@@ -108,8 +108,8 @@ table.columns = [
       </mx-select>
     </div>
     <div slot="footer-left">
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
-        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="ListTrac" />
+      <a href="<%= @widget.logo_link_url %>">
+        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="<%= @widget.partner %>" />
       </a>
     </div>
     <div slot="footer-right">
@@ -148,7 +148,7 @@ document.addEventListener("keydown", (e) => {
 <div class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
     <p id="heading" role="heading" aria-level="2" class="my-0 subtitle3">
-      <%= @heading %>
+      <%= @widget.name %>
     </p>
   </header>
   <div class="flex-1 p-16 bg-gray">
@@ -175,9 +175,9 @@ document.addEventListener("keydown", (e) => {
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
     <% unless @library_mode %>
-      <a href="https://stellar.sso.listtrac.com/Account/SingleSignOn">
+      <a href="<%= @widget.logo_link_url %>">
     <% end %>
-    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="ListTrac" />
+    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="<%= @widget.partner %>" />
     <% unless @library_mode %>
       </a>
     <% end %>

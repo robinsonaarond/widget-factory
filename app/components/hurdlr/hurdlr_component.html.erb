@@ -3,7 +3,7 @@
 <div class="hurdlr inline-widget relative flex flex-col border bg-white text-primary shadow-3 rounded-lg overflow-hidden m-8">
   <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
     <p id="heading" role="heading" aria-level="1" class="my-0 subtitle3">
-      <%= @heading %>
+      <%= @widget.name %>
     </p>
   </header>
   <div class="flex-1 subtitle4 p-16">
@@ -22,9 +22,9 @@
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
     <% unless @library_mode %>
-      <a href="https://prod-integration.hurdlr.com/saml/assertion/stellar">
+      <a href="<%= @widget.logo_link_url %>">
     <% end %>
-    <img id="logo" src="/assets/hurdlr/logo.png" width="64" height="30" alt="Hurdlr" />
+    <img id="logo" src="/assets/hurdlr/logo.png" width="64" height="30" alt="<%= @widget.partner %>" />
     <% unless @library_mode %>
       </a>
     <% end %>

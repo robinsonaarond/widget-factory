@@ -19,6 +19,8 @@ gem "rest-client"
 gem "actionpack-page_caching"
 gem "actionpack-action_caching"
 
+gem "ranked-model"
+
 source "https://gems.moxiworks.com" do
   gem "wms_resource",
     git: "git@github.com:moxiworks/wms_resource.git",

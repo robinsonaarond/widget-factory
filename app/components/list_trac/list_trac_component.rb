@@ -5,14 +5,12 @@ class ListTrac::ListTracComponent < ViewComponent::Base
     @library_mode = library_mode
   end
 
-  # rubocop:disable Metrics/MethodLength
   def before_render
     @library_mode ||= params[:library_mode]
     @token = token # TODO: Remove once API is working for us
     @listings = @library_mode ? demo_listings : agent_listings
-    @heading = "Online Activity"
+    @widget = Widget.find_by(component: "list_trac")
   end
-  # rubocop:enable Metrics/MethodLength
 
   def agent_listings
     demo_listings # TODO: Get agent listing data from API

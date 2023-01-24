@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  component: MyString
+  partner: MyString
+  name: MyString
+  description: MyString
+  logo_link_url: MyString
+  status: MyString
+  activation_date: 2023-01-23 09:04:27
+  internal: false
+  updated_by_uuid: MyString
+
+two:
+  component: MyString
+  partner: MyString
+  name: MyString
+  description: MyString
+  logo_link_url: MyString
+  status: MyString
+  activation_date: 2023-01-23 09:04:27
+  internal: false
+  updated_by_uuid: MyString
