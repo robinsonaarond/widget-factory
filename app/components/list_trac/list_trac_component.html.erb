@@ -227,7 +227,7 @@ if (menuItems.length) {
   });
   menuItems[1].addEventListener("click", () => {
     window.parent.postMessage(
-      { type: "REMOVE", payload: {} },
+      { type: "REMOVE", payload: { component: 'list_trac' } },
       "*"
     );
   });

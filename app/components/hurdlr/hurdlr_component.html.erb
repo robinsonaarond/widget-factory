@@ -34,7 +34,6 @@
           <span class="icon icon-dots-three-vertical"></span>
         </button>
         <mx-menu>
-          <mx-menu-item>Modify settings</mx-menu-item>
           <mx-menu-item>Remove widget</mx-menu-item>
         </mx-menu>
       <% end %>
@@ -118,13 +117,7 @@ if (menuItems.length) {
 
   menuItems[0].addEventListener("click", () => {
     window.parent.postMessage(
-      { type: "MODIFY_SETTINGS", payload: {} },
-      "*"
-    );
-  });
-  menuItems[1].addEventListener("click", () => {
-    window.parent.postMessage(
-      { type: "REMOVE", payload: {} },
+      { type: "REMOVE", payload: { component: 'hurdlr' } },
       "*"
     );
   });
