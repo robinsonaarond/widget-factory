@@ -32,13 +32,16 @@
 .keyboard-drag-button {
   outline-offset: 0.25rem;
 }
-.add-button {
+.add-button,
+.remove-button {
   --mds-text-btn-text-disabled: var(--secondary);
 }
 .remove-button,
 .added-button {
-  --mds-text-btn-text-disabled: currentColor;
   --mds-text-btn-text: currentColor;
+}
+.added-button {
+  --mds-text-btn-text-disabled: currentColor;
 }
 .remove-button:active ~ .added-button,
 .remove-button:focus-within ~ .added-button,
