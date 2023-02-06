@@ -23,6 +23,10 @@
 .widget-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 19.5rem);
+  align-items: stretch;
+}
+.widget-grid li > * {
+  height: calc(100% - 1rem);
 }
 .widget-library-grid {
   display: grid;
