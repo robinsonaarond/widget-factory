@@ -7,26 +7,26 @@ class ListTrac::ListTracComponent < ViewComponent::Base
 
   def before_render
     @library_mode ||= params[:library_mode]
-    @token = token # TODO: Remove once API is working for us
-    @listings = @library_mode ? demo_listings : agent_listings
+    @token = token
     @widget = Widget.find_by(component: "list_trac")
+    @listings, @error = @library_mode ? [demo_listings, nil] : agent_listing_response
   end
 
-  def agent_listings
-    demo_listings # TODO: Get agent listing data from API
-    # response = RestClient.post(
-    #   "https://b2b.listtrac.com/api/GetMetricsByOrganization",
-    #   {
-    #     token: token,
-    #     viewtype: "mls",
-    #     viewtypeID: "stellar",
-    #     metric: "view,inquiry",
-    #     details: "true",
-    #     startdate: "20220909",
-    #     enddate: "20221123"
-    #   }
-    # )
-    # JSON.parse(response, symbolize_names: true)
+  def agent_listing_response
+    params = {
+      access_token: token,
+      TrackingType: "Agent",
+      # TrackingValues: session[:current_user][:mls_number], # TODO
+      TrackingValues: "364512302",
+      ResponseType: "summary"
+    }
+    begin
+      response = RestClient.get("https://b2b.listtrac.com/RESO/OData/InternetTracking", {params: params})
+      json = JSON.parse(response, symbolize_names: true)
+      [json[:value] || [], (json[:status] == "ok") ? nil : json[:description]]
+    rescue RestClient::ExceptionWithResponse => e
+      [[], e.message || "Unknown error getting listings from ListTrac API"]
+    end
   end
 
   def token
@@ -43,24 +43,24 @@ class ListTrac::ListTracComponent < ViewComponent::Base
   def demo_listings
     [
       {
-        address: "123 Main St",
-        views: 100,
-        leads: 10
+        Address: "123 Main St",
+        ViewCount: 100,
+        InquiryCount: 10
       },
       {
-        address: "456 Main St",
-        views: 200,
-        leads: 20
+        Address: "456 Main St",
+        ViewCount: 200,
+        InquiryCount: 20
       },
       {
-        address: "789 Main St",
-        views: 300,
-        leads: 30
+        Address: "789 Main St",
+        ViewCount: 300,
+        InquiryCount: 30
       },
       {
-        address: "101 Main St",
-        views: 400,
-        leads: 40
+        Address: "101 Main St",
+        ViewCount: 400,
+        InquiryCount: 40
       }
     ]
   end

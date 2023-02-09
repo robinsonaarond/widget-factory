@@ -7,7 +7,7 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
 
   def before_render
     @library_mode ||= params[:library_mode]
-    @data = @library_mode ? demo_data : user_vitals
+    @data, @error = @library_mode ? [demo_data, nil] : user_vitals
     @widget = Widget.find_by(component: "hurdlr")
   end
 
@@ -18,8 +18,13 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
   def api_post(endpoint, payload)
     base_url = Rails.env.development? ? "https://sandbox.hurdlr.com/rest/v1/enterprise" : "https://app.hurdlr.com/rest/v1/enterprise"
     token = VendorApiAccess["hurdlr"][Rails.env.development? ? "sandbox_token" : "production_token"]
-    json = RestClient.post("#{base_url}/#{endpoint}", payload.to_json, {Authorization: "Bearer #{token}"})
-    JSON.parse(json, symbolize_names: true)
+    begin
+      response = RestClient.post("#{base_url}/#{endpoint}", payload.to_json, {Authorization: "Bearer #{token}"})
+      data = JSON.parse(response, symbolize_names: true)
+      [data, data[:errorMessage]]
+    rescue RestClient::ExceptionWithResponse => e
+      [{}, e.message || "Unknown error getting Hurdlr data"]
+    end
   end
 
   def demo_data
