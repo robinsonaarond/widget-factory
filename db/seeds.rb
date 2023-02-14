@@ -30,3 +30,7 @@ Widget.create([
     internal: false
   }
 ])
+
+["hurdlr", "list_trac"].each do |component|
+  Widget.find_by(component: component).logo.attach(io: File.open(Rails.root.join("app", "assets", "images", component, "logo.png")), filename: "logo.png")
+end

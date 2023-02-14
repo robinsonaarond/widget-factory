@@ -23,9 +23,11 @@
       </div>
     </mx-table>
     <div slot="footer-left">
-      <a href="<%= @widget.logo_link_url %>">
-        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="<%= @widget.partner %>" />
-      </a>
+      <% if @widget.logo.attached? %>
+        <a href="<%= @widget.logo_link_url %>" target="_blank">
+          <img id="logo" src="<%= url_for(@widget.logo) %>" width="105" height="48" alt="<%= @widget.partner %>" />
+        </a>
+      <% end %>
     </div>
   </mx-modal>
 </div>
@@ -151,9 +153,16 @@ table.columns = [
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
     <% unless @library_mode %>
-      <a href="<%= @widget.logo_link_url %>">
+      <a href="<%= @widget.logo_link_url %>" target="_blank">
     <% end %>
-    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="<%= @widget.partner %>" />
+    <img
+      id="logo"
+      src="<%= @widget.logo.attached? ? url_for(@widget.logo) : "" %>"
+      class="<%= @widget.logo.attached? ? "" : "hidden" %>"
+      width="64"
+      height="30"
+      alt="<%= @widget.partner %>"
+    />
     <% unless @library_mode %>
       </a>
     <% end %>
@@ -223,8 +232,13 @@ window.addEventListener("message", (e) => {
   if (e.data.type === "UPDATE_PREVIEW") {
     const { heading, logo } = e.data.payload;
     if (heading) root.querySelector("#heading").innerText = heading;
-    if (!root.querySelector("#logo").dataset.src) root.querySelector("#logo").dataset.src = root.querySelector("#logo").src;
-    root.querySelector("#logo").src = logo || root.querySelector("#logo").dataset.src;
+    const logoEl = root.querySelector("#logo");
+    if (logo) {
+      logoEl.src = logo;
+      logoEl.classList.remove("hidden");
+    } else {
+      logoEl.classList.add("hidden");
+    }
   } else if (e.data.type === "SET_LOADING") {
     const { isLoading, component } = e.data.payload;
     if (component === 'list_trac') setLoading(isLoading);
