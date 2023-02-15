@@ -10,6 +10,7 @@ class ListTrac::ListTracComponent < ViewComponent::Base
     @token = token
     @widget = Widget.find_by(component: "list_trac")
     @listings, @error = @library_mode ? [demo_listings, nil] : agent_listing_response
+    @listings = @listings.sort_by { |listing| listing[:ViewCount] }.reverse
   end
 
   def agent_listing_response

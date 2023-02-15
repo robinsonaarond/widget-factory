@@ -10,18 +10,7 @@
     <div slot="header-right" class="flex items-center space-x-16">
       <mx-button class="close-button" btn-type="text">Close</mx-button>
     </div>
-    <mx-table>
-      <div>
-        <% @listings.each do |listing| %>
-          <mx-table-row>
-            <mx-table-cell>123 Main St</mx-table-cell><!-- TODO -->
-            <mx-table-cell><%= listing[:ViewCount] %></mx-table-cell>
-            <mx-table-cell>10</mx-table-cell><!-- TODO -->
-            <mx-table-cell></mx-table-cell>
-          </mx-table-row>
-        <% end %>
-      </div>
-    </mx-table>
+    <mx-table></mx-table>
     <div slot="footer-left">
       <% if @widget.logo.attached? %>
         <a href="<%= @widget.logo_link_url %>" target="_blank">
@@ -65,10 +54,11 @@ document.addEventListener("keydown", (e) => {
 });
 
 const table = root.querySelector("mx-table");
+table.rows = JSON.parse('<%= raw @listings.to_json %>');
 table.columns = [
-  { heading: "Listing" },
-  { heading: "Views", align: "right" },
-  { heading: "Leads", align: "right" },
+  { heading: "Listing", property: "Address", sortable: true },
+  { heading: "Views", property: "ViewCount", sortable: true },
+  { heading: "Leads", property: "InquiryCount", sortable: true },
   { isActionColumn: true } // Design has a blank column here
 ];
 
