@@ -52,7 +52,7 @@ resizeObserver.observe(root);
 const addButton = root.querySelector('mx-button');
 if (addButton) {
   addButton.addEventListener('click', () => {
-    const url = `${window.location.origin}<%= component_named_expanded_path %>`;
+    const url = `${window.location.origin}<%= component_named_expanded_path %>${window.location.search}`;
     setLoading(true);
     window.parent.postMessage({ type: 'EXPAND', payload: { url } }, '*');
   });
