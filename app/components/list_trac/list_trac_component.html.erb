@@ -6,26 +6,17 @@
 <%# Expanded Widget %>
 <div class="list_trac w-screen h-screen">
   <mx-modal large close-on-escape="false">
-    <div slot="header-left"><%= @widget.name %></div>
+    <div slot="header-left"><%= @widget.name %> (Last 30 days)</div>
     <div slot="header-right" class="flex items-center space-x-16">
       <mx-button class="close-button" btn-type="text">Close</mx-button>
     </div>
-    <mx-table>
-      <div>
-        <% @listings.each do |listing| %>
-          <mx-table-row>
-            <mx-table-cell>123 Main St</mx-table-cell><!-- TODO -->
-            <mx-table-cell><%= listing[:ViewCount] %></mx-table-cell>
-            <mx-table-cell>10</mx-table-cell><!-- TODO -->
-            <mx-table-cell></mx-table-cell>
-          </mx-table-row>
-        <% end %>
-      </div>
-    </mx-table>
+    <mx-table></mx-table>
     <div slot="footer-left">
-      <a href="<%= @widget.logo_link_url %>">
-        <img id="logo" src="/assets/list_trac/logo.png" width="105" height="48" alt="<%= @widget.partner %>" />
-      </a>
+      <% if @widget.logo.attached? %>
+        <a href="<%= @widget.logo_link_url %>" target="_blank">
+          <img id="logo" src="<%= url_for(@widget.logo) %>" width="105" height="48" alt="<%= @widget.partner %>" />
+        </a>
+      <% end %>
     </div>
   </mx-modal>
 </div>
@@ -63,10 +54,11 @@ document.addEventListener("keydown", (e) => {
 });
 
 const table = root.querySelector("mx-table");
+table.rows = JSON.parse('<%= raw @listings.to_json %>');
 table.columns = [
-  { heading: "Listing" },
-  { heading: "Views", align: "right" },
-  { heading: "Leads", align: "right" },
+  { heading: "Address", property: "Address", sortable: true },
+  { heading: "Views", property: "ViewCount", sortable: true },
+  { heading: "Leads", property: "InquiryCount", sortable: true },
   { isActionColumn: true } // Design has a blank column here
 ];
 
@@ -81,8 +73,8 @@ table.columns = [
       <%= @widget.name %>
     </p>
   </header>
-  <div class="flex-1 py-12 px-16 bg-gray relative">
-    <table class="w-full rounded-xl bg-white shadow-1" cellspacing="0">
+  <div class="flex-1 py-12 px-16 bg-gray relative min-w-0 max-w-full overflow-hidden">
+    <table class="w-full max-w-full overflow-hidden min-w-0 rounded-xl bg-white shadow-1" cellspacing="0">
       <thead class="h-32">
         <tr>
           <th class="text-left pl-24">Address</th>
@@ -94,9 +86,11 @@ table.columns = [
         <% if @listings.any? %>
           <% @listings.first(4).each do |listing| %>
           <tr>
-            <td><%# listing[:Address] %>123 Fake St</td>
+            <td title="<%= listing[:Address] %>">
+              <%= listing[:Address] %>
+            </td>
             <td><%= listing[:ViewCount] %></td>
-            <td><%# listing[:InquiryCount] %> 5</td>
+            <td><%= listing[:InquiryCount] %></td>
           </tr>
           <% end %>
         <% else %>
@@ -151,9 +145,16 @@ table.columns = [
     class="flex items-center min-h-48 justify-between bg-white border-t px-16"
   >
     <% unless @library_mode %>
-      <a href="<%= @widget.logo_link_url %>">
+      <a href="<%= @widget.logo_link_url %>" target="_blank">
     <% end %>
-    <img id="logo" src="/assets/list_trac/logo.png" width="64" height="30" alt="<%= @widget.partner %>" />
+    <img
+      id="logo"
+      src="<%= @widget.logo.attached? ? url_for(@widget.logo) : "" %>"
+      class="<%= @widget.logo.attached? ? "" : "hidden" %>"
+      width="64"
+      height="30"
+      alt="<%= @widget.partner %>"
+    />
     <% unless @library_mode %>
       </a>
     <% end %>
@@ -223,8 +224,13 @@ window.addEventListener("message", (e) => {
   if (e.data.type === "UPDATE_PREVIEW") {
     const { heading, logo } = e.data.payload;
     if (heading) root.querySelector("#heading").innerText = heading;
-    if (!root.querySelector("#logo").dataset.src) root.querySelector("#logo").dataset.src = root.querySelector("#logo").src;
-    root.querySelector("#logo").src = logo || root.querySelector("#logo").dataset.src;
+    const logoEl = root.querySelector("#logo");
+    if (logo) {
+      logoEl.src = logo;
+      logoEl.classList.remove("hidden");
+    } else if (logo !== undefined) {
+      logoEl.classList.add("hidden");
+    }
   } else if (e.data.type === "SET_LOADING") {
     const { isLoading, component } = e.data.payload;
     if (component === 'list_trac') setLoading(isLoading);

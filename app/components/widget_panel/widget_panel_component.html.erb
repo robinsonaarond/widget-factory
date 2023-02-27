@@ -11,7 +11,7 @@
     <p id="reorder-help" class="sr-only">
       Activate the reorder button and use the arrow keys to reorder the list. Press Escape or Tab to cancel the reordering.
     </p>
-    <ol class="widget-grid" aria-labelledby="widgets-heading">
+    <ol class="widget-grid overflow-hidden pb-96" aria-labelledby="widgets-heading">
       <% @user_widgets.each do |user_widget| %>
         <li data-widget-id="<%= user_widget.widget.id %>" data-widget-component="<%= user_widget.widget.component %>" data-widget-name="<%= user_widget.widget.name %>">
           <%= render Object.const_get("#{user_widget.widget.component.camelize}::#{user_widget.widget.component.camelize}Component").new %>
@@ -52,7 +52,7 @@ resizeObserver.observe(root);
 const addButton = root.querySelector('mx-button');
 if (addButton) {
   addButton.addEventListener('click', () => {
-    const url = `${window.location.origin}<%= component_named_expanded_path %>`;
+    const url = `${window.location.origin}<%= component_named_expanded_path %>${window.location.search}`;
     setLoading(true);
     window.parent.postMessage({ type: 'EXPAND', payload: { url } }, '*');
   });
