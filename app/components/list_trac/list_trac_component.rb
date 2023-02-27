@@ -17,8 +17,8 @@ class ListTrac::ListTracComponent < ViewComponent::Base
     params = {
       access_token: token,
       TrackingType: "Agent",
-      # TrackingValues: session[:current_user][:mls_number], # TODO
-      TrackingValues: "364512302",
+      TrackingValues: session[:current_user][:mls_number],
+      # TrackingValues: "364512302",
       ResponseType: "summary"
     }
     begin
