@@ -163,7 +163,7 @@ window.addEventListener("message", (e) => {
     if (logo) {
       logoEl.src = logo;
       logoEl.classList.remove("hidden");
-    } else {
+    } else if (logo !== undefined) {
       logoEl.classList.add("hidden");
     }
   }
