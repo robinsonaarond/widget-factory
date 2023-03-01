@@ -1,0 +1,93 @@
+<link rel="stylesheet" type="text/css" href="/assets/tips/style.css">
+
+<div class="tips inline-widget relative flex flex-col border bg-white text-primary shadow-3 rounded-lg overflow-hidden m-8">
+  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
+    <p id="heading" role="heading" aria-level="1" class="my-0 subtitle3">
+      <%= @widget.name %>
+    </p>
+  </header>
+  <div class="flex flex-1 py-12 px-16 tip-bg" style="--tip-bg: var(--tip-bg-<%= @bg %>)">
+    <div class="tip-container w-full flex-1 flex flex-col items-center justify-center p-12 rounded-xl <%= @library_mode ? "pointer-events-none" : "" %>">
+      <p class="text-4 my-0 mb-8 text-center">
+        <%= @tip %>
+      </p>
+      <% if @cta_label.present? %>
+        <mx-button btn-type="text" href="<%= @cta_url %>" target="_parent"><%= @cta_label %></mx-button>
+      <% end %>
+    </div>
+  </div>
+  <footer
+    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
+  >
+    <img
+      id="logo"
+      src="<%= @widget.logo.attached? ? url_for(@widget.logo) : "" %>"
+      class="<%= @widget.logo.attached? ? "h-48" : "hidden" %>"
+      alt="<%= @widget.partner %>"
+    />
+    <div class="actions flex items-center">
+      <% unless @library_mode %>
+        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
+          <span class="icon icon-dots-three-vertical"></span>
+        </button>
+        <mx-menu>
+          <mx-menu-item>Remove widget</mx-menu-item>
+        </mx-menu>
+      <% end %>
+    </div>
+  </footer>
+</div>
+
+<script type="module">
+const root = document.querySelector('.tips');
+const menu = root.querySelector("mx-menu");
+const menuButton = root.querySelector(".menu-button");
+if (menu && menuButton) menu.anchorEl = menuButton;
+
+const menuItems = root.querySelectorAll("mx-menu-item");
+if (menuItems.length) {
+
+  menuItems[0].addEventListener("click", () => {
+    window.parent.postMessage(
+      { type: "REMOVE", payload: { component: 'tips' } },
+      "*"
+    );
+  });
+}
+
+window.addEventListener("message", (e) => {
+  if (e.data.type === "UPDATE_PREVIEW") {
+    updateHeadingAndLogo(e);
+    updateTip(e);
+  }
+});
+
+function updateHeadingAndLogo(e) {
+  const { heading, logo } = e.data.payload;
+  if (heading) root.querySelector("#heading").innerText = heading;
+  const logoEl = root.querySelector("#logo");
+  if (logo) {
+    logoEl.src = logo;
+    logoEl.classList.remove("hidden");
+  } else if (logo !== undefined) {
+    logoEl.classList.add("hidden");
+  }
+}
+
+function updateTip(e) {
+  const { tip, cta_label, bg } = e.data.payload;
+  if (tip) root.querySelector(".tip-container p").innerText = tip;
+  const button = root.querySelector("mx-button");
+  if (cta_label) {
+    button.classList.remove('hidden');
+    const buttonContent = root.querySelector("mx-button .slot-content");
+    buttonContent.innerText = cta_label;
+  } else if (cta_label !== undefined) {
+    button.classList.add('hidden');
+  }
+  if (bg) {
+    const tipBg = root.querySelector(".tip-bg");
+    tipBg.style.setProperty("--tip-bg", `var(--tip-bg-${bg})`);
+  }
+}
+</script>
