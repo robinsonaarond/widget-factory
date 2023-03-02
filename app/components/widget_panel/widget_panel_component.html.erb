@@ -353,9 +353,14 @@ async function _fetch(url, options) {
 
 <%# Expanded Widget Script (Widget Library) %>
 <script type="module">
+let activeRequests = [];
+let isWaitingToClose = false;
 const SESSION_ID = '<%= params[:session_id] %>';
 const root = document.querySelector('.widget_panel');
-const sendCloseMessage = () => {
+const sendCloseMessage = async () => {
+  if (isWaitingToClose) return;
+  isWaitingToClose = true;
+  await Promise.all(activeRequests);
   window.parent.postMessage(
     { type: "CLOSE_EXPANDED", payload: {} },
     "*"
@@ -446,7 +451,10 @@ function destroyUserWidget(widgetId) {
 }
 async function _fetch(url, options) {
   options = { ...options, headers: { 'Content-Type': 'application/json' } }
-  const response = await fetch(url, options)
+  const promise = fetch(url, options);
+  activeRequests.push(promise);
+  const response = await promise;
+  activeRequests = activeRequests.filter((p) => p !== promise);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   } else {
