@@ -40,20 +40,8 @@
 
 <script type="module">
 const root = document.querySelector('.tips');
-const menu = root.querySelector("mx-menu");
-const menuButton = root.querySelector(".menu-button");
-if (menu && menuButton) menu.anchorEl = menuButton;
-
-const menuItems = root.querySelectorAll("mx-menu-item");
-if (menuItems.length) {
-
-  menuItems[0].addEventListener("click", () => {
-    window.parent.postMessage(
-      { type: "REMOVE", payload: { component: 'tips' } },
-      "*"
-    );
-  });
-}
+initMenu();
+addCtaClickHandler();
 
 window.addEventListener("message", (e) => {
   if (e.data.type === "UPDATE_PREVIEW") {
@@ -61,6 +49,34 @@ window.addEventListener("message", (e) => {
     updateTip(e);
   }
 });
+
+function initMenu() {
+  const menu = root.querySelector("mx-menu");
+  const menuButton = root.querySelector(".menu-button");
+  if (menu && menuButton) menu.anchorEl = menuButton;
+  
+  const menuItems = root.querySelectorAll("mx-menu-item");
+  if (menuItems.length) {
+  
+    menuItems[0].addEventListener("click", () => {
+      window.parent.postMessage(
+        { type: "REMOVE", payload: { component: 'tips' } },
+        "*"
+      );
+    });
+  }
+}
+
+function addCtaClickHandler() {
+  const button = root.querySelector("mx-button");
+  if (!button) return;
+  button.addEventListener("click", (e) => {
+    window.parent.postMessage(
+      { type: "CTA_CLICK", payload: { component: 'tips' } },
+      "*"
+    );
+  });
+}
 
 function updateHeadingAndLogo(e) {
   const { heading, logo } = e.data.payload;
