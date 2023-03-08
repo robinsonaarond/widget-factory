@@ -17,7 +17,7 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
 
   def api_post(endpoint, payload)
     base_url = Rails.env.development? ? "https://sandbox.hurdlr.com/rest/v1/enterprise" : "https://app.hurdlr.com/rest/v1/enterprise"
-    token = VendorApiAccess["hurdlr"][Rails.env.development? ? "sandbox_token" : "production_token"]
+    token = VendorApiAccess["hurdlr"]["token"]
     begin
       response = RestClient.post("#{base_url}/#{endpoint}", payload.to_json, {Authorization: "Bearer #{token}"})
       data = JSON.parse(response, symbolize_names: true)

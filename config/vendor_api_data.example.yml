@@ -1,6 +1,5 @@
 hurdlr:
-  sandbox_token: 'XX'
-  production_token: 'XX'
+  token: 'XX'
   test_user_id: ''
 
 list_trac:
