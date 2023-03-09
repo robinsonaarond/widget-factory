@@ -72,7 +72,7 @@ function addCtaClickHandler() {
   if (!button) return;
   button.addEventListener("click", (e) => {
     window.parent.postMessage(
-      { type: "CTA_CLICK", payload: { component: 'tips' } },
+      { type: "CTA_CLICK", payload: { component: 'tips', id: '<%= @id %>' } },
       "*"
     );
   });
@@ -92,12 +92,12 @@ function updateHeadingAndLogo(e) {
 
 function updateTip(e) {
   const { tip, cta_label, bg } = e.data.payload;
-  if (tip) root.querySelector(".tip-container p").innerText = tip;
+  if (tip !== undefined) root.querySelector(".tip-container p").innerText = tip;
   const button = root.querySelector("mx-button");
   if (cta_label) {
     button.classList.remove('hidden');
     const buttonContent = root.querySelector("mx-button .slot-content");
-    buttonContent.innerText = cta_label;
+    if (buttonContent) buttonContent.innerText = cta_label;
   } else if (cta_label !== undefined) {
     button.classList.add('hidden');
   }
