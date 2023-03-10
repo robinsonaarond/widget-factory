@@ -1,0 +1,26 @@
+.tips {
+  --tip-bg-1: linear-gradient(114.83deg, #007985 0%, #0033a0 100%);
+  --tip-bg-2: linear-gradient(114.83deg, #0033a0 0%, #9e1c64 100%);
+  --tip-bg-3: linear-gradient(
+    114.83deg,
+    var(--primary) 0%,
+    var(--secondary) 100%
+  );
+  --tip-bg-4: linear-gradient(114.83deg, #e0bd64 0%, #9e1c64 100%);
+  --tip-bg-5: linear-gradient(180deg, #98d4c7 0%, #57799c 100%);
+  --tip-bg-6: var(--primary);
+  --tip-bg-7: var(--secondary);
+  --tip-bg-8: linear-gradient(
+    180deg,
+    #9e1c64 0%,
+    rgba(158, 28, 100, 0.72) 100%
+  );
+}
+
+.tips .tip-bg {
+  background: var(--tip-bg);
+}
+
+.tips .tip-container {
+  background-color: rgba(255, 255, 255, 0.95);
+}

@@ -28,9 +28,19 @@ Widget.create([
     status: "ready",
     activation_date: Time.zone.now,
     internal: false
+  },
+  {
+    component: "tips",
+    partner: "Stellar",
+    name: "Tip of the Week",
+    description: "Stay ahead of the game with our weekly real estate tip! Stay up-to-date on industry trends to grow your business in just a few minutes a week.",
+    logo_link_url: "",
+    status: "ready",
+    activation_date: Time.zone.now,
+    internal: false
   }
 ])
 
-["hurdlr", "list_trac"].each do |component|
+["hurdlr", "list_trac", "tips"].each do |component|
   Widget.find_by(component: component).logo.attach(io: File.open(Rails.root.join("app", "assets", "images", component, "logo.png")), filename: "logo.png")
 end
