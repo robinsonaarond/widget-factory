@@ -14,7 +14,7 @@
     <ol class="widget-grid overflow-hidden pb-96" aria-labelledby="widgets-heading">
       <% @user_widgets.each do |user_widget| %>
         <li data-widget-id="<%= user_widget.widget.id %>" data-widget-component="<%= user_widget.widget.component %>" data-widget-name="<%= user_widget.widget.name %>">
-          <%= render Object.const_get("#{user_widget.widget.component.camelize}::#{user_widget.widget.component.camelize}Component").new %>
+          <%= render user_widget.widget.view_component.new %>
         </li>
       <% end %>
     </ol>
@@ -336,7 +336,7 @@ async function _fetch(url, options) {
               </mx-button>
             </div>
           </div>
-          <%= render Object.const_get("#{widget.component.camelize}::#{widget.component.camelize}Component").new(library_mode: true) %>
+          <%= render widget.view_component.new(library_mode: true) %>
           <div class="px-8 mt-20">
             <p role="heading" aria-level="3" class="overline2 my-0 mb-8">
               Description

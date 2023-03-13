@@ -21,6 +21,12 @@ class Widget < ApplicationRecord
     status == Widget.statuses[:ready] && (activation_date.blank? || activation_date <= Time.zone.now)
   end
 
+  def view_component
+    Object.const_get("#{component.camelize}::#{component.camelize}Component")
+  rescue NameError
+    nil
+  end
+
   def logo_url
     return unless logo.attached?
     Rails.application.routes.url_helpers.rails_representation_url(logo, only_path: true)
