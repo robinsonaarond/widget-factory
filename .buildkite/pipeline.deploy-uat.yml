@@ -6,8 +6,8 @@ env:
   SERVICE: "widget-factory"
   ECR_URL: "447351447783.dkr.ecr.us-west-2.amazonaws.com"
   DOCKER_REPOSITORY: "$ECR_URL/$SERVICE"
-  LATEST_DEPLOY_NAME: "qa-latest-deploy"
-  DEPLOY_NAME: "qa-$BUILDKITE_BUILD_NUMBER"
+  LATEST_DEPLOY_NAME: "uat-latest-deploy"
+  DEPLOY_NAME: "uat-$BUILDKITE_BUILD_NUMBER"
 
 steps:
   - label: ":docker: Docker Build"
@@ -31,12 +31,12 @@ steps:
 
   - wait
 
-  - label: ':rocket: Deploy to QA'
+  - label: ':rocket: Deploy to UAT'
     trigger: 'deploy-to-eks'
     build:
-      message: ":fork: ${SERVICE} (QA) ${BUILDKITE_MESSAGE}"
+      message: ":fork: ${SERVICE} (UAT) ${BUILDKITE_MESSAGE}"
       branch: "master"
       env:
         APP: $SERVICE
-        ENVIRONMENT: qa
+        ENVIRONMENT: uat
         TAG: ${DEPLOY_NAME}

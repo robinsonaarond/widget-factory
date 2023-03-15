@@ -1,0 +1,9 @@
+{
+  "test/models/session_test.rb": 2.4885905829942203,
+  "test/components/tips/tips_component_test.rb": 3.55829979525879e-05,
+  "test/controllers/component_controller_test.rb": 3.0944773349983734,
+  "test/components/widget_panel/widget_panel_component_test.rb": 3.658300556708127e-05,
+  "test/components/hurdlr/hurdlr_component_test.rb": 2.3458000214304775e-05,
+  "test/components/list_trac/list_trac_component_test.rb": 2.4665998353157192e-05,
+  "test/components/example_component_test.rb": 0.5065996249977616
+}

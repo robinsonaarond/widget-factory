@@ -7,6 +7,7 @@ gem "sprockets-rails"
 gem "sqlite3", "~> 1.4"
 gem "puma", "~> 5.0"
 gem "importmap-rails"
+gem "pg", "~> 1.4.5"
 # gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
@@ -45,4 +46,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
+  gem "minitest-junit"
 end
+
+gem 'knapsack', group: [:development, :test]

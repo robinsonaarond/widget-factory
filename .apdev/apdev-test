@@ -11,9 +11,7 @@ set -e
 apdev_test() {
 	printf "\n== Running unit tests ==\n"
 
-
-apdev run widget-factory rails test
-
+  apdev run widget-factory ./ops/bin/run-tests.sh "$@"
 }
 
-apdev_test
+apdev_test "$@"

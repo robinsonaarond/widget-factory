@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Help: Generate knapsack report
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev knapsack-gen-report
+
+apdev run widget-factory /app/ops/bin/knapsack-gen-report.sh

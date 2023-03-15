@@ -5,12 +5,13 @@ service_public_port: '30013'
 default_git_branch: main
 production_git_branch: main
 guard_enabled: false
-filebeat_enabled: false
+filebeat_enabled: true
 ruby:
   enabled: true
   version: 3.0.2
   bundler_version: 2.3.26
   test_framework: minitest
+  use_rake: false
   cucumber_enabled: false
   application_server: puma
 node:
@@ -19,5 +20,15 @@ node:
   package_manager: npm
   npm_version: '8.19.2'
 db:
-prebaked_services: moxi-redis,moxi-memcached
+  enabled: true
+  db_type: pg
+  db_version: 14
+  db_name: svc-feed
+  db_schema: wf,public
+prebaked_services: moxi-redis,moxi-memcached,postgres14.5
 env_vars: ''
+secret_env_vars: 'VENDOR_API_ACCESS;SECURE_REQUEST_SALT;'
+ecr:
+  repository_created: true
+use_moxi_db: false
+moxi_db_schemas: ''

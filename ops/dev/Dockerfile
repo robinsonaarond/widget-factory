@@ -25,6 +25,20 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Create .ssh folder and add github.com as known host
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
+# Install PostgreSQL dependencies like libpq-dev and postgresql-client
+ARG PG_MAJOR
+ARG PG_VERSION
+RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && echo 'deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=tmpfs,target=/var/log \
+    apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+      libpq-dev \
+      postgresql-client-$PG_VERSION
+
+
 
 ARG NODE_MAJOR
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -40,7 +54,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=tmpfs,target=/var/log \
     --mount=type=bind,source=ops/AppDependencies,target=/tmp/AppDependencies \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    apt-get update -qq &&     DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
       $(grep -Ev '^\s*#' /tmp/AppDependencies | xargs)
 
 
@@ -57,7 +71,7 @@ ENV BUNDLE_APP_CONFIG=.bundle
 ENV PATH /app/bin:$PATH
 
 # Upgrade RubyGems and install the latest Bundler version
-RUN gem update --system && \
+RUN gem update --system  && \
   gem install bundler -v 2.3.26
 
 # Create a directory for the app code

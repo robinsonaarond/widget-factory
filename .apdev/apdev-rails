@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+# Help: Run rails commands in the context scope of bundle exec
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev rails s
+# Help:   $ apdev rails c
+# Help:   $ apdev rails db
+# Help:   $ apdev rails routes
+# Help:   $ apdev rails db:create
+# Help:   $ apdev rails db:rollback STEP=1
+# Help:   $ apdev rails db:migrate
+# Help:   $ apdev rails db:migrate:down VERSION=123
+# Help:   $ RAILS_ENV=test apdev rails c
+# Help:   etc.
+
+LOG_LEVEL=info apdev run widget-factory bundle exec rails $@

@@ -4,11 +4,13 @@ version: '3.5'
 x-widget-factory: &1
   image: widget-factory-dev:1.0.0
   build:
-    context: "${APDEV_WIDGET_FACTORY_DIR:-.}"
-    dockerfile: "${APDEV_WIDGET_FACTORY_DIR:-.}/ops/dev/Dockerfile"
+    context: "${APDEV_WIDGET_FACTORY_DIR:?}"
+    dockerfile: ops/dev/Dockerfile
     args:
       RUBY_VERSION: 3.0.2
       NODE_MAJOR: '18'
+      PG_MAJOR: 14
+      PG_VERSION: '14'
       NPM_VERSION: 8.19.2
   tmpfs:
   - "/tmp"
@@ -17,18 +19,19 @@ x-widget-factory: &1
   tty: true
   volumes:
   - "/run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock"
+  - "~/.ssh:/root/.ssh:ro"
   - widget-factory_history:/usr/local/hist
-  - "${APDEV_WIDGET_FACTORY_DIR:-.}:/app:rw,cached"
-  - "${APDEV_WIDGET_FACTORY_DIR:-.}/ops/dev/.bashrc:/root/.bashrc:ro"
-  - "${APDEV_WIDGET_FACTORY_DIR:-.}/ops/dev/.irbrc:/root/.irbrc:ro"
+  - "${APDEV_WIDGET_FACTORY_DIR:?}:/app:rw,cached"
+  - "${APDEV_WIDGET_FACTORY_DIR:?}/ops/dev/.bashrc:/root/.bashrc:ro"
+  - "${APDEV_WIDGET_FACTORY_DIR:?}/ops/dev/.irbrc:/root/.irbrc:ro"
   - widget-factory_rails_cache:/app/tmp/cache
   - widget-factory_assets_builds:/app/assets/builds
   - widget-factory_bundle_cache:/usr/local/bundle
   - widget-factory_node_modules:/app/node_modules
   env_file:
   - "${APDEV_WIDGET_FACTORY_SECRETS}"
-  - "${APDEV_WIDGET_FACTORY_DIR:-.}/ops/env/base.env"
-  - "${APDEV_WIDGET_FACTORY_DIR:-.}/ops/env/custom.env"
+  - "${APDEV_WIDGET_FACTORY_DIR:?}/ops/env/base.env"
+  - "${APDEV_WIDGET_FACTORY_DIR:?}/ops/env/custom.env"
   environment:
     HISTFILE: "/usr/local/hist/.bash_history"
     EDITOR: nano
@@ -36,21 +39,25 @@ x-widget-factory: &1
     BOOTSNAP_CACHE_DIR: "/usr/local/bundle/_bootsnap"
     XDG_DATA_HOME: "/app/tmp/caches"
     IRB_HISTFILE: "/usr/local/hst/.irb_history"
+    DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
     NPM_CONFIG_CACHE: "/app/node_modules/.npm-cache"
+    PSQL_HISTFILE: "/usr/local/hist/.psql_history"
   depends_on:
     moxi-redis:
       condition: service_healthy
     moxi-memcached:
       condition: service_started
+    postgres14.5:
+      condition: service_healthy
   command: "./ops/bin/start-service.sh"
   ports:
   - 30013:3000
 services:
   widget-factory: *1
 volumes:
-  widget-factory_history:
-  widget-factory_rails_cache:
-  widget-factory_bundle_cache:
-  widget-factory_assets_builds:
-  widget-factory_node_modules:
+  widget-factory_history: 
+  widget-factory_rails_cache: 
+  widget-factory_bundle_cache: 
+  widget-factory_assets_builds: 
+  widget-factory_node_modules: 
 

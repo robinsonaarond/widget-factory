@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Help: Run rake commands in the context scope of bundle exec
+# Help:
+# Help: Usage:
+# Help:
+# Help:   $ apdev rake your_favorite:rake_task
+
+LOG_LEVEL=info apdev run widget-factory bundle exec rake $@
