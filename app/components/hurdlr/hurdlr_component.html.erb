@@ -76,10 +76,10 @@
 <script type="module">
 const root = document.querySelector('.hurdlr');
 const rows = [
-  { label: 'Income', key: 'revenue', value: <%= @data[:revenue] %> },
-  { label: 'Expenses', key: 'expenses', value: <%= @data[:expenses] %> },
-  { label: 'Taxes', key: 'overallTaxAmount', value: <%= @data[:overallTaxAmount] %> },
-  { label: 'Profit after tax', key: 'afterTaxIncome', value: <%= @data[:afterTaxIncome] %> },
+  { label: 'Income', key: 'revenue', value: <%= @data[:revenue] || 0 %> },
+  { label: 'Expenses', key: 'expenses', value: <%= @data[:expenses] || 0 %> },
+  { label: 'Taxes', key: 'overallTaxAmount', value: <%= @data[:overallTaxAmount] || 0 %> },
+  { label: 'Profit after tax', key: 'afterTaxIncome', value: <%= @data[:afterTaxIncome] || 0 %> },
 ];
 const formatUSD = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -91,7 +91,7 @@ const tbody = root.querySelector('tbody');
 // Generate the table rows
 rows.forEach(row => {
   const tr = document.createElement('tr');
-  let percent = row.value / <%= @data[:revenue] %> * 100;
+  let percent = row.value / <%= @data[:revenue] || 0 %> * 100;
   if (isNaN(percent)) percent = 0;
   tr.innerHTML = `
     <td aria-labelledby="metric-heading" id="${row.key}-label">
