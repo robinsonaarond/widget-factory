@@ -1,0 +1,42 @@
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  BUILDKIT_PROGRESS: plain
+
+  SERVICE: "widget-factory"
+  ECR_URL: "447351447783.dkr.ecr.us-west-2.amazonaws.com"
+  DOCKER_REPOSITORY: "$ECR_URL/$SERVICE"
+  LATEST_DEPLOY_NAME: "staging-latest-deploy"
+  DEPLOY_NAME: "staging-$BUILDKITE_BUILD_NUMBER"
+
+steps:
+  - label: ":docker: Docker Build"
+    plugins:
+      ecr#v2.5.0:
+        login: true
+        region: us-west-2
+      docker-compose#v4.9.0:
+        config: ops/ci/docker-compose.yml
+        cli-version: 2
+        build: $SERVICE
+        image-repository: "$DOCKER_REPOSITORY"
+        cache-from: "$SERVICE:$DOCKER_REPOSITORY:$LATEST_DEPLOY_NAME"
+        push:
+          - "$SERVICE:$DOCKER_REPOSITORY:$LATEST_DEPLOY_NAME"
+          - "$SERVICE:$DOCKER_REPOSITORY:$DEPLOY_NAME"
+        args:
+          - BUILDKIT_INLINE_CACHE=1
+    agents:
+      queue: docker-ec2
+
+  - wait
+
+  - label: ':rocket: Deploy to Staging'
+    trigger: 'deploy-to-eks'
+    build:
+      message: ":fork: ${SERVICE} (Staging) ${BUILDKITE_MESSAGE}"
+      branch: "master"
+      env:
+        APP: $SERVICE
+        ENVIRONMENT: staging
+        TAG: ${DEPLOY_NAME}
