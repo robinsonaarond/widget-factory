@@ -21,7 +21,7 @@
   >
     <img
       id="logo"
-      src="<%= @widget.logo.attached? ? url_for(@widget.logo) : "" %>"
+      src="<%= @widget.logo.attached? ? @widget.logo_url : "" %>"
       class="<%= @widget.logo.attached? ? "h-48" : "hidden" %>"
       alt="<%= @widget.partner %>"
     />

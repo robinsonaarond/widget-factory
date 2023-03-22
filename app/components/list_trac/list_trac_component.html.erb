@@ -14,7 +14,7 @@
     <div slot="footer-left">
       <% if @widget.logo.attached? %>
         <a href="<%= @widget.logo_link_url %>" target="_blank">
-          <img id="logo" src="<%= url_for(@widget.logo) %>" width="105" height="48" alt="<%= @widget.partner %>" />
+          <img id="logo" src="<%= @widget.logo_url %>" width="105" height="48" alt="<%= @widget.partner %>" />
         </a>
       <% end %>
     </div>
@@ -149,7 +149,7 @@ table.columns = [
     <% end %>
     <img
       id="logo"
-      src="<%= @widget.logo.attached? ? url_for(@widget.logo) : "" %>"
+      src="<%= @widget.logo.attached? ? @widget.logo_url : "" %>"
       class="<%= @widget.logo.attached? ? "" : "hidden" %>"
       width="64"
       height="30"
