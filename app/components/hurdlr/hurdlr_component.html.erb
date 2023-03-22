@@ -51,7 +51,7 @@
     <% end %>
     <img
       id="logo"
-      src="<%= @widget.logo.attached? ? url_for(@widget.logo) : "" %>"
+      src="<%= @widget.logo.attached? ? @widget.logo_url : "" %>"
       class="<%= @widget.logo.attached? ? "" : "hidden" %>"
       width="64"
       height="30"
