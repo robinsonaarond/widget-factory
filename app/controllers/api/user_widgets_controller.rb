@@ -1,9 +1,11 @@
 class Api::UserWidgetsController < ApplicationController
-  before_action :set_user_widget, only: [:update, :destroy]
+  before_action :set_user_widget, only: [:create, :update, :destroy]
   skip_before_action :verify_authenticity_token
 
   # POST /api/user_widgets
   def create
+    return render json: @user_widget, status: :ok if @user_widget.present? # Prevent duplicates
+
     @user_widget = UserWidget.new(user_widget_params)
     @user_widget.user_uuid = session[:current_user][:uuid]
 
@@ -32,7 +34,7 @@ class Api::UserWidgetsController < ApplicationController
 
   def set_user_widget
     user_uuid = session[:current_user][:uuid]
-    @user_widget = UserWidget.find_by(widget_id: params[:id], user_uuid: user_uuid)
+    @user_widget = UserWidget.find_by(widget_id: params[:id] || params[:widget_id], user_uuid: user_uuid)
   end
 
   def user_widget_params
