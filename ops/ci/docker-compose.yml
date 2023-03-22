@@ -13,6 +13,8 @@ services:
         PG_MAJOR: 14
         PG_VERSION: '14'
         NPM_VERSION: 8.19.2
+        GIT_HASH: "${BUILDKITE_COMMIT}"
+        GIT_BRANCH: "${BUILDKITE_BRANCH}"
       secrets:
       - vendor_api_access
       - secure_request_salt

@@ -85,10 +85,3 @@ RUN mkdir -p tmp/cache log
 
 # Use Bash as the default command
 CMD ["/usr/bin/bash"]
-
-# These values will be set based on when the image was created,
-# so they're just here for the sake of having some value for use in the application while testing
-ARG GIT_TAG
-ENV GIT_TAG=${GIT_TAG}
-ARG GIT_HASH
-ENV GIT_HASH=${GIT_HASH}
