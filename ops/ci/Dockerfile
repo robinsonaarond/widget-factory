@@ -107,7 +107,7 @@ COPY . /app/
 
 RUN mkdir -p tmp/cache log
 
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile assets:precompile
 
 ARG GIT_HASH
 ARG GIT_BRANCH
