@@ -31,8 +31,6 @@ steps:
         push: "$SERVICE:$DOCKER_REPOSITORY:branch-$BUILDKITE_BRANCH-latest"
         args:
           - BUILDKIT_INLINE_CACHE=1
-          - GIT_HASH=${BUILDKITE_COMMIT}
-          - GIT_BRANCH=${BUILDKITE_BRANCH}
 
   - wait
 

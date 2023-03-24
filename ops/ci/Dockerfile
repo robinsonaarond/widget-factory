@@ -94,9 +94,10 @@ RUN \
   --mount=type=ssh \
   --mount=type=secret,id=vendor_api_access \
 --mount=type=secret,id=secure_request_salt \
+--mount=type=secret,id=rails_master_key \
   mkdir -p /root/.ssh \
   && ssh-keyscan github.com >> /root/.ssh/known_hosts \
-  && VENDOR_API_ACCESS=$(cat /run/secrets/vendor_api_access) SECURE_REQUEST_SALT=$(cat /run/secrets/secure_request_salt) bundle install
+  && VENDOR_API_ACCESS=$(cat /run/secrets/vendor_api_access) SECURE_REQUEST_SALT=$(cat /run/secrets/secure_request_salt) RAILS_MASTER_KEY=$(cat /run/secrets/rails_master_key) bundle install
 
 # Install JavaScript libraries
 ADD package.json package-lock.json /app/

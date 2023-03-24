@@ -27,7 +27,7 @@ db:
   db_schema: wf,public
 prebaked_services: moxi-redis,moxi-memcached,postgres14.5
 env_vars: ''
-secret_env_vars: 'VENDOR_API_ACCESS;SECURE_REQUEST_SALT;'
+secret_env_vars: 'VENDOR_API_ACCESS;SECURE_REQUEST_SALT;RAILS_MASTER_KEY;'
 ecr:
   repository_created: true
 use_moxi_db: false
