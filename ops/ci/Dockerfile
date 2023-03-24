@@ -107,8 +107,6 @@ COPY . /app/
 
 RUN mkdir -p tmp/cache log
 
-RUN SECRET_KEY_BASE_DUMMY=1 DISABLE_DATABASE_ENVIRONMENT_CHECK=1 ./bin/rails assets:precompile assets:precompile
-
 ARG GIT_HASH
 ARG GIT_BRANCH
 ENV GIT_HASH=$GIT_HASH
