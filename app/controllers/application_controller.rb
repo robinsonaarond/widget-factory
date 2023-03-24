@@ -13,7 +13,8 @@ class ApplicationController < ActionController::Base
       auth_response = Resource::Auth.poll(params[:session_id])
 
       unless auth_response.nil?
-        response = Base.profile_request("#{Rails.application.config.base_profile_service_url}/profile/#{params[:user_uuid]}")
+        user_uuid = JSON.parse(auth_response, symbolize_names: true)[:vals][:context_user_uuid]
+        response = Base.profile_request("#{Rails.application.config.base_profile_service_url}/profile/#{user_uuid}")
         user = response[:data][0]
         Session.set_user_on_session(user, session)
       end
