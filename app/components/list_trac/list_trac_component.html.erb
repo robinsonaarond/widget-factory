@@ -1,5 +1,5 @@
 <!-- Token: <%= @token %> -->
-<link rel="stylesheet" type="text/css" href="/assets/list_trac/style.css">
+<%= stylesheet_link_tag "list_trac/style" %>
 
 <% if current_page?(component_named_expanded_path('list_trac')) %>
 
@@ -97,7 +97,7 @@ table.columns = [
           <tr>
             <td colspan="3">
               <div class="flex flex-col items-center justify-center">
-                <img src="/assets/design-tools.svg" class="w-72 h-72 mb-8" alt="">
+                <%= image_tag "design-tools.svg", alt: "", class: "w-72 h-72 mb-8" %>
                 <p class="caption2 my-0 whitespace-normal text-center">
                   We know you're working hard. When you have listings, you'll see them here.
                 </p>
