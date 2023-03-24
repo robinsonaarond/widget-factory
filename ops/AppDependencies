@@ -1,3 +1,4 @@
 libpq-dev
 pkg-config
 libsqlite3-dev
+nano
