@@ -22,6 +22,8 @@ gem "actionpack-action_caching"
 
 gem "ranked-model"
 
+gem "aws-sdk-s3", require: false
+
 source "https://gems.moxiworks.com" do
   gem "wms_resource",
     git: "git@github.com:moxiworks/wms_resource.git",
