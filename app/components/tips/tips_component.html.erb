@@ -8,7 +8,7 @@
   </header>
   <div class="flex flex-1 py-12 px-16 tip-bg" style="--tip-bg: var(--tip-bg-<%= @bg %>)">
     <div class="tip-container w-full flex-1 flex flex-col items-center justify-center p-12 rounded-xl <%= @library_mode ? "pointer-events-none" : "" %>">
-      <p class="text-4 my-0 mb-8 text-center">
+      <p class="text-4 my-0 mb-8 text-center" style="overflow-wrap: anywhere">
         <%= @tip %>
       </p>
       <% if @cta_label.present? %>
