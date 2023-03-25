@@ -22,7 +22,11 @@ class ListTrac::ListTracComponent < ViewComponent::Base
       ResponseType: "summary"
     }
     begin
-      response = RestClient.get("https://b2b.listtrac.com/RESO/OData/InternetTracking", {params: params})
+      response = RestClient::Request.execute(
+        method: :get,
+        url: "https://b2b.listtrac.com/RESO/OData/InternetTracking?#{params.to_query}",
+        verify_ssl: false
+      )
       json = JSON.parse(response, symbolize_names: true)
       [json[:value] || [], (json[:status] == "ok") ? nil : json[:description]]
     rescue RestClient::ExceptionWithResponse => e
@@ -36,7 +40,11 @@ class ListTrac::ListTracComponent < ViewComponent::Base
       orgID: "stellar",
       username: VendorApiAccess["list_trac"]["username"]
     }
-    json_response = RestClient.get "https://b2b.listtrac.com/api/getkey?#{key_params.to_query}"
+    json_response = RestClient::Request.execute(
+      method: :get,
+      url: "https://b2b.listtrac.com/api/getkey?#{key_params.to_query}",
+      verify_ssl: false
+    )
     response = JSON.parse(json_response, symbolize_names: true)
     Digest::MD5.hexdigest(pass + response[:key])
   end
