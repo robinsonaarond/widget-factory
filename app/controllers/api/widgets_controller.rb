@@ -41,6 +41,6 @@ class Api::WidgetsController < ApplicationController
   end
 
   def widget_params
-    params.require(:widget).permit(:name, :description, :status, :activation_date, :remove_logo)
+    params.require(:widget).permit(:name, :description, :status, :activation_date, :remove_logo, :updated_by)
   end
 end
