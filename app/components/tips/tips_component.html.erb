@@ -12,7 +12,9 @@
         <%= @tip %>
       </p>
       <% if @cta_label.present? %>
-        <mx-button btn-type="text" href="<%= @cta_url %>" target="_parent"><%= @cta_label %></mx-button>
+        <mx-button btn-type="text" href="<%= @cta_url %>" class="max-w-full" target="_parent">
+          <%= @cta_label %>
+        </mx-button>
       <% end %>
     </div>
   </div>
