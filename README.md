@@ -8,16 +8,11 @@ Widgets will be created using a combination of Ruby View Components and the MDS 
 
 This will be a work in progress. For now we're creating the most minimal implementation we can.
 
-## Widgets and Routes
+## Widgets
 
-There are only two routes available in this application (currently):
+The route for a rendered widget component is `/component/:name/:session_id`. The `name` is the name of the component (e.g. "list_trac"), and the `session_id` is the session ID of the user (see [Authentication](#authentication) below). The session ID acts as an authentication mechanism for components that require a valid user, as well as a way to get necessary user data for third-party API requests, such as a user's MLS ID.
 
-1. welcome/index
-2. component/:name
-
-The route we currently care about is `component/:name`.
-
-Take the example component (ExampleComponent.new()). If you go to `/component/example` it will pull up the example component by dynamically rendering it. Since components will need to be uniquely named per their Class definition - it pairs nicely with unique URLs based on the component name.
+View `/component/example/1234` for an example.
 
 ## Creating a New Component
 
@@ -37,16 +32,18 @@ test/components/list_trac/list_trac_component_test.rb
 
 And if you want to view the component you'd go to:
 
-`http://localhost:{port}/component/list_trac`
+`http://localhost:{port}/component/list_trac/{session_id}`
 
 ## Development
 
-After forking and cloning the repository. From your terminal:
+See `/docs/apdev.md` for development within Docker.
+
+Alternatively, after forking and cloning the repository. From your terminal:
 
 1. `bundle install`
 2. `yarn install`
 3. `lefthook install` (Installed by bundler. This will add linting validations pre-push)
-4. `rails s -p 5000` (or whatever port you desire)
+4. `rails s -p 30013` (or whatever port you desire)
 
 ### Requirements
 
@@ -59,3 +56,37 @@ You will need to add a `config/secreq.yml` file with proper salt hashes for secu
 There is a `config/vendor_api_data.yml` file. You'll need to create a `config/vendor_api_data.yml` file and add proper credentials for the APIs you're wanting to connect to.
 
 There is a global variable set as `VendorApiAccess`.
+
+### Authentication
+
+When embedded within another MoxiWorks application (e.g. Nucleus), the session ID from the host application should be passed to the Widget Factory. For the embeddable component URLs, this session ID is part of the route (see [Widgets](#widgets) above). For the API endpoints, the session ID should be passed as a `session_id` query parameter.
+
+#### JWT Authentication
+
+Alternatively, a JSON Web Token (JWT) can be passed to the Widget Factory in place of a session ID. You will still need a valid user uuid and password.
+
+1. Encode the password using Base64. For example, in your terminal:
+
+```bash
+echo -n "password" | openssl base64
+```
+
+2. Send a POST request to `/api/jwt` with the following body:
+
+```json
+{
+  "uuid": "user-uuid-goes-here",
+  "passowrd": "encoded-password-goes-here"
+}
+```
+
+The response body will be in the following format:
+
+```json
+{
+  "token": "token-will-appear-here",
+  "exp": "03-31-2023 17:02"
+}
+```
+
+3. For any request to the Widget Factory, pass the `token` value as the `Authorization` header. For the `/component/:name/:session_id` routes, be sure to pass a dummy value for `session_id` (e.g. `/component/tips/1234`) so the route is matched correctly.
