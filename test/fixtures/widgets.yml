@@ -9,7 +9,7 @@ one:
   status: MyString
   activation_date: 2023-01-23 09:04:27
   internal: false
-  updated_by_uuid: MyString
+  updated_by: MyString
 
 two:
   component: MyString
@@ -20,4 +20,4 @@ two:
   status: MyString
   activation_date: 2023-01-23 09:04:27
   internal: false
-  updated_by_uuid: MyString
+  updated_by: MyString
