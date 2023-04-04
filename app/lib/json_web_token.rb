@@ -1,5 +1,4 @@
 class JsonWebToken
-  # TODO
   SECRET_KEY = ENV.fetch("SECURE_REQUEST_SALT") { YAML.load_file(Rails.root.join("config", "secreq.yml"))[Rails.env]["salt"] }
 
   def self.encode(payload)
