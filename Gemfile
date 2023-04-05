@@ -19,6 +19,7 @@ gem "view_component"
 gem "rest-client"
 gem "actionpack-page_caching"
 gem "actionpack-action_caching"
+gem "jwt"
 
 gem "ranked-model"
 

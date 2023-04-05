@@ -180,6 +180,7 @@ GEM
       activesupport (>= 5.0.0)
     jmespath (1.6.2)
     json (2.6.2)
+    jwt (2.3.0)
     knapsack (4.0.0)
       rake
     lefthook (1.2.2)
@@ -362,6 +363,7 @@ DEPENDENCIES
   erb_lint
   importmap-rails
   jbuilder
+  jwt
   knapsack
   lefthook
   minitest-junit

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
-  before_action :clear_session, :check_valid_session
+  before_action :clear_session, unless: -> { request.headers["Authorization"].present? }
+  before_action :jwt_authenticate, :check_valid_session
 
   private
 
@@ -14,14 +15,32 @@ class ApplicationController < ActionController::Base
 
       unless auth_response.nil?
         user_uuid = JSON.parse(auth_response, symbolize_names: true)[:vals][:context_user_uuid]
-        response = Base.profile_request("#{Rails.application.config.base_profile_service_url}/profile/#{user_uuid}")
-        user = response[:data][0]
-        Session.set_user_on_session(user, session)
+        set_user(user_uuid)
       end
     end
   end
 
   def clear_session
     session.clear
+  end
+
+  def set_user(uuid)
+    response = Base.profile_request("#{Rails.application.config.base_profile_service_url}/profile/#{uuid}")
+    user = response[:data][0]
+    Session.set_user_on_session(user, session)
+  end
+
+  def jwt_authenticate
+    return unless request.headers["Authorization"].present?
+    header = request.headers["Authorization"]
+    token = header.split(" ").last if header
+    begin
+      decoded = JsonWebToken.decode(token)
+      set_user(decoded["uuid"])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: {errors: e.message}, status: :unauthorized
+    rescue JWT::DecodeError => e
+      render json: {errors: e.message}, status: :unauthorized
+    end
   end
 end
