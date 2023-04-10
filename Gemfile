@@ -53,3 +53,5 @@ group :test do
 end
 
 gem 'knapsack', group: [:development, :test]
+
+gem "webmock", "~> 3.18"

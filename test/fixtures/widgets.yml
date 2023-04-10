@@ -6,7 +6,7 @@ one:
   name: MyString
   description: MyString
   logo_link_url: MyString
-  status: MyString
+  status: ready
   activation_date: 2023-01-23 09:04:27
   internal: false
   updated_by: MyString
