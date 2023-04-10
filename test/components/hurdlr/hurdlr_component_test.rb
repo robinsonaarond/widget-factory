@@ -47,8 +47,19 @@ class Hurdlr::HurdlrComponentTest < ViewComponent::TestCase
     instance_variable_set(:@error, "unknown error") do
       assert_includes(
         rendered.to_html,
-        "Oh no something happened!"
+        "working on fixing things"
       )
+    end
+  end
+
+  def test_component_renders_error_with_api
+    instance_variable_set(:@error, "unknown error") do
+      instance_variable_set(:@error_with_api, true) do
+        assert_includes(
+          rendered.to_html,
+          "trouble connecting to Hurdlr"
+        )
+      end
     end
   end
 
