@@ -13,13 +13,14 @@ class WidgetTest < ActiveSupport::TestCase
   end
 
   test "activated_widgets should return activated widgets" do
+    activated_fixture_count = Widget.activated_widgets.count
     Widget.create(name: "Draft Widget", status: "draft")
     Widget.create(name: "Ready Widget 1", status: "ready", activation_date: Time.now - 1.hour)
     Widget.create(name: "Ready Widget 2", status: "ready", activation_date: Time.now + 1.hour)
     Widget.create(name: "Deactivated Widget", status: "deactivated")
     activated_widgets = Widget.activated_widgets
-    assert_equal 1, activated_widgets.count
-    assert_equal ["Ready Widget 1"], activated_widgets.map(&:name).sort
+    assert_equal 1, activated_widgets.count - activated_fixture_count
+    assert_includes activated_widgets.map(&:name), "Ready Widget 1"
   end
 
   test "activated should return true for activated widgets" do
