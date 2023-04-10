@@ -7,8 +7,16 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
 
   def before_render
     @library_mode ||= params[:library_mode]
-    @data, @error = @library_mode ? [demo_data, nil] : user_vitals
-    @widget = Widget.find_by(component: "hurdlr")
+    @data = {}
+    @error = nil
+    @error_with_api = false
+    begin
+      @widget = Widget.find_by(component: "hurdlr")
+      @data, @error = @library_mode ? [demo_data, nil] : user_vitals
+      @error_with_api = @error.present?
+    rescue => e
+      @error = e.message
+    end
   end
 
   def user_vitals
@@ -20,7 +28,13 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
     base_url = (Rails.env.production? || Rails.env.uat?) ? "https://app.hurdlr.com/rest/v1/enterprise" : "https://sandbox.hurdlr.com/rest/v1/enterprise"
     token = VendorApiAccess["hurdlr"]["token"]
     begin
-      response = RestClient.post("#{base_url}/#{endpoint}", payload.to_json, {Authorization: "Bearer #{token}"})
+      response = RestClient::Request.execute(
+        method: :post,
+        timeout: 10,
+        url: "#{base_url}/#{endpoint}",
+        payload: payload.to_json,
+        headers: {Authorization: "Bearer #{token}"}
+      )
       data = JSON.parse(response, symbolize_names: true)
       [data, data[:errorMessage]]
     rescue RestClient::ExceptionWithResponse => e

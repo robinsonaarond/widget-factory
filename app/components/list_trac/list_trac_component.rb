@@ -7,13 +7,21 @@ class ListTrac::ListTracComponent < ViewComponent::Base
 
   def before_render
     @library_mode ||= params[:library_mode]
-    @token = token
-    @widget = Widget.find_by(component: "list_trac")
-    @listings, @error = @library_mode ? [demo_listings, nil] : agent_listing_response
-    @listings = @listings.sort_by { |listing| listing[:ViewCount] }.reverse
+    @listings = []
+    @error = nil
+    @error_with_api = false
+    begin
+      @widget = Widget.find_by(component: "list_trac")
+      @token = token unless @library_mode
+      @listings = @library_mode ? demo_listings : agent_listings
+      @listings = @listings.sort_by { |listing| listing[:ViewCount] }.reverse
+    rescue => e
+      @error = e.message
+      @error_with_api = e.is_a?(RestClient::Exception) || e.is_a?(SocketError)
+    end
   end
 
-  def agent_listing_response
+  def agent_listings
     params = {
       access_token: token,
       TrackingType: "Agent",
@@ -21,17 +29,14 @@ class ListTrac::ListTracComponent < ViewComponent::Base
       # TrackingValues: "364512302",
       ResponseType: "summary"
     }
-    begin
-      response = RestClient::Request.execute(
-        method: :get,
-        url: "https://b2b.listtrac.com/RESO/OData/InternetTracking?#{params.to_query}",
-        verify_ssl: false
-      )
-      json = JSON.parse(response, symbolize_names: true)
-      [json[:value] || [], (json[:status] == "ok") ? nil : json[:description]]
-    rescue RestClient::ExceptionWithResponse => e
-      [[], e.message || "Unknown error getting listings from ListTrac API"]
-    end
+    response = RestClient::Request.execute(
+      method: :get,
+      timeout: 10,
+      url: "https://b2b.listtrac.com/RESO/OData/InternetTracking?#{params.to_query}",
+      verify_ssl: false
+    )
+    json = JSON.parse(response, symbolize_names: true)
+    json[:value] || []
   end
 
   def token

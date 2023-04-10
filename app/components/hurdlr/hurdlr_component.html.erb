@@ -39,7 +39,13 @@
           <path d="M36.5 40.6445C33.6886 40.6445 31.1603 42.3161 30.0208 44.8822C29.7757 45.4124 30.0208 46.0237 30.551 46.2275C31.0811 46.4726 31.6924 46.2274 31.8962 45.6973C32.6699 43.8633 34.4641 42.6821 36.4603 42.6821C38.4169 42.6821 40.2094 43.8633 40.9849 45.6973C41.1473 46.1049 41.5548 46.3086 41.9226 46.3086C42.0452 46.3086 42.2076 46.2672 42.3302 46.2274C42.8603 45.9823 43.1038 45.4123 42.8603 44.8822C41.8398 42.3159 39.3118 40.6445 36.5005 40.6445L36.5 40.6445Z" fill="white"/>
         </svg>
         <p class="subtitle3 my-0">Oh no something happened!</p>
-        <p class="caption1 my-0 text-center">We're working on fixing things,<br />please check back soon.</p>
+        <p class="caption1 my-0 text-center">
+          <% if @error_with_api %>
+            We're having trouble connecting to Hurdlr.<br />Please check back soon.
+          <% else %>
+            We're working on fixing things,<br />please check back soon.
+          <% end %>
+        </p>
       </div>
     <% end %>
   </div>
@@ -74,6 +80,9 @@
 </div>
 
 <script type="module">
+const apiError = '<%= @error&.gsub(/'/, "\\\\'") %>';
+if (apiError !== '') console.error(apiError);
+
 const root = document.querySelector('.hurdlr');
 const rows = [
   { label: 'Income', key: 'revenue', value: <%= @data[:revenue] || 0 %> },
