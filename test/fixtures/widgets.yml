@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  component: MyString
+  component: widget_one
   partner: MyString
-  name: MyString
+  name: Widget One
   description: MyString
   logo_link_url: MyString
   status: MyString
@@ -12,12 +12,12 @@ one:
   updated_by: MyString
 
 two:
-  component: MyString
+  component: widget_two
   partner: MyString
-  name: MyString
+  name: Widget Two
   description: MyString
   logo_link_url: MyString
-  status: MyString
+  status: draft
   activation_date: 2023-01-23 09:04:27
   internal: false
   updated_by: MyString
