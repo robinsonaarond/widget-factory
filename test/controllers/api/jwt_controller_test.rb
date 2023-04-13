@@ -18,6 +18,6 @@ class Api::JwtControllerTest < ActionController::TestCase
   end
 
   def service_url(uuid)
-    "#{Rails.application.config.base_profile_v2_service_url}/#{uuid}/validate_token"
+    "#{Rails.application.config.service_url[:profile_v2]}/#{uuid}/validate_token"
   end
 end

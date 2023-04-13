@@ -68,7 +68,5 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  config.base_profile_v2_service_url = "https://svc-devint.moxiworks.com/service/profile/v2"
-  config.base_profile_service_url = "https://svc-devint.moxiworks.com/service/profile/v3/nucleus"
-  config.auth_service_url = "https://svc-devint.moxiworks.com/service/v1/auth"
+  config.base_service = "https://svc-devint.moxiworks.com"
 end

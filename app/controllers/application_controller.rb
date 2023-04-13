@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_user(uuid)
-    response = Base.profile_request("#{Rails.application.config.base_profile_service_url}/profile/#{uuid}")
+    response = Base.profile_request("#{Rails.application.config.service_url[:profile_v3]}/nucleus/profile/#{uuid}")
     user = response[:data][0]
     Session.set_user_on_session(user, session)
   end

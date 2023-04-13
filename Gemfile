@@ -55,3 +55,5 @@ end
 gem 'knapsack', group: [:development, :test]
 
 gem "webmock", "~> 3.18"
+
+gem "sidekiq", "~> 7.0"
