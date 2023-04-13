@@ -48,6 +48,18 @@ class Widget < ApplicationRecord
     save
   end
 
+  def log_event!(event_type, event_data = {})
+    return unless session[:current_user]
+    EventLoggerJob.perform_async(
+      event_type,
+      component,
+      event_data,
+      session[:current_user][:uuid],
+      session[:current_user][:company_uuid],
+      session[:current_user][:board_uuid]
+    )
+  end
+
   private
 
   def purge_logo
