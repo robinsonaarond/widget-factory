@@ -28,5 +28,15 @@ module WidgetFactory
     config.cache_store = :mem_cache_store, config.memcached_server, {namespace: "_widgetfactory_"}
     config.action_controller.perform_caching = true
     config.action_controller.page_cache_directory = Rails.root.join("public", "cached_pages")
+
+    config.before_initialize do
+      config.service_url = {
+        auth: ENV["auth_service_url"] || "#{config.base_service}/service/v1/auth",
+        profile_v2: ENV["profile_service_v2_url"] || "#{config.base_service}/service/profile/v2",
+        profile_v3: ENV["profile_service_v2_url"] || "#{config.base_service}/service/profile/v3",
+      }
+
+      config.active_job.queue_adapter = :sidekiq
+    end
   end
 end

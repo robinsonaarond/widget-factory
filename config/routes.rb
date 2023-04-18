@@ -10,6 +10,11 @@ Rails.application.routes.draw do
   get "check" => "status#check"
   get "clear_cache" => "status#clear_cache"
 
+  if defined?(Sidekiq)
+    require "sidekiq/web"
+    mount Sidekiq::Web => "/sidekiq"
+  end
+
   namespace :api do
     resources :widgets
     resources :user_widgets

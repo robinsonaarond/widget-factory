@@ -10,8 +10,11 @@ class Session
       member_role: user[:member_role],
       office_external_id: user[:office][:office_external_id],
       company_external_id: user[:company][:company_external_id],
+      company_uuid: user[:company][:company_uuid],
       board_external_id: user[:board][:board_external_id],
-      board_mls_id: user[:board][:mls_id]
+      board_mls_id: user[:board][:mls_id],
+      board_uuid: user[:board][:board_uuid],
+      office_uuid: user[:office][:office_uuid],
     }
 
     session[:current_user] = h

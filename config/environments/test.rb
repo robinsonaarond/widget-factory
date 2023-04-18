@@ -58,7 +58,5 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
-  config.base_profile_v2_service_url = "https://svc-devint.moxiworks.com/service/profile/v2"
-  config.base_profile_service_url = "https://svc-devint.moxiworks.com/service/profile/v3/nucleus"
-  config.auth_service_url = "https://svc-devint.moxiworks.com/service/v1/auth"
+  config.base_service = ENV["svc_base"] || "https://svc-devint.moxiworks.com"
 end

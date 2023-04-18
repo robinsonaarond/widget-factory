@@ -1,5 +1,5 @@
 class Resource::Auth < WmsResource::Resource
-  self.site = Rails.application.config.auth_service_url
+  self.site = Rails.application.config.service_url[:auth]
 
   def self.poll(session_id)
     Rails.cache.fetch(session_id, expires_in: 5.minutes, skip_nil: true) do

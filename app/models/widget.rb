@@ -48,6 +48,18 @@ class Widget < ApplicationRecord
     save
   end
 
+  def log_event!(event_type, event_data = {}, user_uuid, company_uuid, board_uuid, office_uuid)
+    EventLoggerJob.perform_async(
+      event_type,
+      component,
+      event_data.to_json,
+      user_uuid,
+      company_uuid,
+      board_uuid,
+      office_uuid
+    )
+  end
+
   private
 
   def purge_logo

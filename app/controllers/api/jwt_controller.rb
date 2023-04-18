@@ -3,7 +3,7 @@ class Api::JwtController < ApplicationController
 
   # POST /api/jwt
   def index
-    service = "#{Rails.application.config.base_profile_v2_service_url}/#{params[:uuid]}/validate_token"
+    service = "#{Rails.application.config.service_url[:profile_v2]}/#{params[:uuid]}/validate_token"
     sr = WmsResource::SecureRequest.new("profile")
     salt = "#{Base64.decode64(params[:password])}:#{params[:uuid]}"
     check = Digest::SHA512.hexdigest(Base64.encode64(Digest::SHA512.hexdigest(salt)))

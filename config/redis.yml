@@ -1,0 +1,31 @@
+defaults: &defaults
+  host: 127.0.0.1
+  port: 6379
+  database: 0
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+  database: 1
+
+staging:
+  <<: *defaults
+  host: widget-factory-prs-st.redis.moxi.bz
+
+dev_integration:
+  <<: *defaults
+  host: widget-factory-prs-devint.redis.moxi.bz
+
+qa:
+  <<: *defaults
+  host: widget-factory-prs-qa.redis.moxi.bz
+
+uat:
+  <<: *defaults
+  host: widget-factory-prs-uat.redis.moxi.bz
+
+production:
+  <<: *defaults
+  host: widget-factory-prs.redis.moxi.bz

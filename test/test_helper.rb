@@ -25,9 +25,9 @@ knapsack_adapter.set_test_helper_path(__FILE__)
 module JwtHelper
   def get_jwt
     # Stub authentication request
-    stub_request(:post, "#{Rails.application.config.base_profile_v2_service_url}/1234/validate_token").to_return(status: 200)
+    stub_request(:post, "#{Rails.application.config.service_url[:profile_v2]}/1234/validate_token").to_return(status: 200)
     # Stub future requests to get user profile
-    stub_request(:get, "#{Rails.application.config.base_profile_service_url}/profile/1234")
+    stub_request(:get, "#{Rails.application.config.service_url[:profile_v3]}/nucleus/profile/1234")
       .with(query: hash_including({}))
       .to_return(status: 200, body: {data: [{uuid: "1234", office: {}, company: {}, board: {}}]}.to_json)
     post api_jwt_path, params: {uuid: "1234", password: Base64.encode64("password")}
