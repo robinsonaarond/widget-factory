@@ -5,7 +5,10 @@
 <section class="widget_panel text-primary relative">
   <header class="flex items-center justify-between px-8">
     <p id="widgets-heading" role="heading" aria-level="1" class="my-0 subtitle2">My Widgets</p>
-    <mx-button btn-type="text" icon="icon icon-plus-circle">Add Widget</mx-button>
+    <mx-button btn-type="text" icon="icon icon-plus-circle">
+      Add/Remove
+      <span class="add-remove-widgets">Widgets</span>
+    </mx-button>
   </header>
   <% if @user_widgets.any? %>
     <p id="reorder-help" class="sr-only">
@@ -24,7 +27,7 @@
       No widgets to show yet
     </div>
     <div class="mb-16">
-      Widgets offer a convenient pulse check of your real estate ecosystem by surfacing essential activity and insights right from your dashboard. Select “Add Widget” to get started.
+      Widgets offer a convenient pulse check of your real estate ecosystem by surfacing essential activity and insights right from your dashboard. Select “Add/Remove Widgets” to get started.
     </div>
     <%= image_tag "empty-state.svg", alt: "", role: "presentation", class: "mx-auto", style: "width: 200px;" %>
   </div>
