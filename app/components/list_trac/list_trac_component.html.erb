@@ -23,6 +23,7 @@
 
 <%# Expanded Widget Script %>
 <script type="module">
+const SESSION_ID = '<%= params[:session_id] %>';
 const root = document.querySelector('.list_trac');
 const sendCloseMessage = () => {
   window.parent.postMessage(
@@ -53,6 +54,12 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") sendCloseMessage();
 });
 
+document.addEventListener('click', (e) => {
+  if (e.target.closest('a img#logo')) {
+    logEvent('widget_click_partner_logo');
+  }
+});
+
 const table = root.querySelector("mx-table");
 table.rows = JSON.parse('<%= raw @listings.to_json %>');
 table.columns = [
@@ -61,6 +68,25 @@ table.columns = [
   { heading: "Leads", property: "InquiryCount", sortable: true },
   { isActionColumn: true } // Design has a blank column here
 ];
+
+function logEvent(eventType, eventData) {
+  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: eventType,
+      event_data: eventData,
+      component: 'list_trac',
+     })
+  });
+}
+
+async function _fetch(url, options) {
+  options = { ...options, headers: { 'Content-Type': 'application/json' } }
+  const response = await fetch(url, options)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+}
 
 </script>
 
@@ -184,6 +210,7 @@ table.columns = [
 
 <%# Inline Widget Script %>
 <script type="module">
+const SESSION_ID = '<%= params[:session_id] %>';
 const apiError = '<%= @error&.gsub(/'/, "\\\\'") %>';
 if (apiError !== '') console.error(apiError);
 
@@ -191,13 +218,16 @@ const root = document.querySelector('.list_trac');
 const menu = root.querySelector("mx-menu");
 const menuButton = root.querySelector(".menu-button");
 if (menu && menuButton) menu.anchorEl = menuButton;
+menuButton.addEventListener('click', () => {
+  logEvent('widget_open_menu');
+});
 
 const expandButton = root.querySelector(".expand-button");
 if (expandButton) expandButton.addEventListener("click", expand);
 const viewMore = root.querySelector(".view-more");
 if (viewMore) viewMore.addEventListener("click", expand);
 
-function expand() {
+function expand(e) {
   const { origin, pathname, search } = window.location;
   const url = `${window.location.origin}<%= component_named_expanded_path('list_trac', params[:session_id]) %>`;
   setLoading(true);
@@ -205,6 +235,7 @@ function expand() {
     { type: "EXPAND", payload: { url } },
     "*"
   );
+  logEvent(e.target.closest('.view-more') ? 'widget_click_view_more' : 'widget_expand');
 }
 
 function setLoading(isLoading) {
@@ -242,5 +273,32 @@ window.addEventListener("message", (e) => {
     if (component === 'list_trac') setLoading(isLoading);
   }
 });
+
+root.addEventListener('click', (e) => {
+  if (e.target.closest('.sign-up')) {
+    logEvent('widget_click_view_more');
+  } else if (e.target.closest('a img#logo')) {
+    logEvent('widget_click_partner_logo');
+  }
+});
+
+function logEvent(eventType, eventData) {
+  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: eventType,
+      event_data: eventData,
+      component: 'list_trac',
+     })
+  });
+}
+
+async function _fetch(url, options) {
+  options = { ...options, headers: { 'Content-Type': 'application/json' } }
+  const response = await fetch(url, options)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+}
 </script>
 <% end %>
