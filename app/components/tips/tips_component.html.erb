@@ -41,6 +41,7 @@
 </div>
 
 <script type="module">
+const SESSION_ID = '<%= params[:session_id] %>';
 const root = document.querySelector('.tips');
 initMenu();
 addCtaClickHandler();
@@ -56,6 +57,9 @@ function initMenu() {
   const menu = root.querySelector("mx-menu");
   const menuButton = root.querySelector(".menu-button");
   if (menu && menuButton) menu.anchorEl = menuButton;
+  menuButton.addEventListener('click', () => {
+    logEvent('widget_open_menu');
+  });
   
   const menuItems = root.querySelectorAll("mx-menu-item");
   if (menuItems.length) {
@@ -106,6 +110,31 @@ function updateTip(e) {
   if (bg) {
     const tipBg = root.querySelector(".tip-bg");
     tipBg.style.setProperty("--tip-bg", `var(--tip-bg-${bg})`);
+  }
+}
+
+root.addEventListener('click', (e) => {
+  if (e.target.closest('a[target="_blank"]')) {
+    logEvent('widget_click_cta');
+  }
+});
+
+function logEvent(eventType, eventData) {
+  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: eventType,
+      event_data: eventData,
+      component: 'tips',
+     })
+  });
+}
+
+async function _fetch(url, options) {
+  options = { ...options, headers: { 'Content-Type': 'application/json' } }
+  const response = await fetch(url, options)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 }
 </script>

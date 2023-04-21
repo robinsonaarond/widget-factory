@@ -38,7 +38,16 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
       data = JSON.parse(response, symbolize_names: true)
       [data, data[:errorMessage]]
     rescue RestClient::ExceptionWithResponse => e
-      [{}, e.message || "Unknown error getting Hurdlr data"]
+      message = e.message || "Unknown error getting Hurdlr data"
+      @widget.log_event!(
+        'widget_error',
+        {message: message, endpoint: endpoint, payload: payload},
+        session.dig(:current_user, :uuid),
+        session.dig(:current_user, :company_uuid),
+        session.dig(:current_user, :board_uuid),
+        session.dig(:current_user, :office_uuid)  
+      )
+      [{}, message]
     end
   end
 

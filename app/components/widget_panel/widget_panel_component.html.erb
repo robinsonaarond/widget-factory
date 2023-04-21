@@ -38,9 +38,12 @@
 
 <%# Inline Widget Script (My Widgets) %>
 <script type="module">
-const WIDGET_LIBRARY = 'widget_library';
 const SESSION_ID = '<%= params[:session_id] %>';
 const root = document.querySelector('.widget_panel');
+
+document.addEventListener('DOMContentLoaded', () => {
+  logEvent('widget_dashboard_load', { timeMs: performance.now() })
+});
 
 // Notify parent window of height changes
 const resizeObserver = new ResizeObserver(entries => {
@@ -82,12 +85,24 @@ function setLoading(isLoading) {
 function removeWidget(component) {
   const widget = root.querySelector(`[data-widget-component="${component}"]`);
   destroyUserWidget(widget.dataset.widgetId);
+  logEvent('widget_remove_via_menu');
   widget.remove();
   if (!root.querySelector('li')) {
     root.querySelector('.empty-state').classList.remove('hidden');
   } else {
     resetWidgetOrderAttributes();
   }
+}
+
+function logEvent(eventType, eventData) {
+  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: eventType,
+      event_data: eventData,
+      component: 'widget_panel',
+     })
+  });
 }
 
 // Drag sorting
@@ -264,6 +279,7 @@ function reorderWidgetElements() {
     );
     orderedWidgets.forEach(widget => draggedWidget.parentElement.appendChild(widget));
     updateUserWidget();
+    logEvent('widget_reorder_widgets');
     overWidget = null;
   }
   resetWidgetOrderAttributes();
@@ -386,6 +402,9 @@ modal.addEventListener("mxClose", sendCloseMessage);
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") sendCloseMessage();
 });
+document.addEventListener('DOMContentLoaded', () => {
+  logEvent('widget_open_library', { timeMs: performance.now() })
+});
 
 const addButtons = root.querySelectorAll(".add-button");
 addButtons.forEach((button) => {
@@ -441,13 +460,26 @@ removeButtons.forEach((button) => {
   });
 });
 
+function logEvent(eventType, eventData) {
+  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: eventType,
+      event_data: eventData,
+      component: 'widget_panel',
+     })
+  });
+}
+
 function createUserWidget(widgetId) {
+  logEvent('widget_add_via_library');
   return _fetch(`/api/user_widgets?session_id=${SESSION_ID}`, {
     method: 'POST',
     body: JSON.stringify({ widget_id: widgetId, row_order_position: 'last' })
   })
 }
 function destroyUserWidget(widgetId) {
+  logEvent('widget_remove_via_library');
   return _fetch(`/api/user_widgets/${widgetId}?session_id=${SESSION_ID}`, {
     method: 'DELETE',
   })

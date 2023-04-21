@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   namespace :api do
     resources :widgets
     resources :user_widgets
+    post "events" => "events#create"
     post "jwt" => "jwt#index"
   end
 

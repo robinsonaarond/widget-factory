@@ -22,7 +22,7 @@
         <p class="subtitle2 my-0 mb-24 text-center">
           Sorry, we can’t find your account.<br />Please sign up to get started.
         </p>
-        <mx-button href="https://web.hurdlr.com/onboarding/selectBusiness" target="_blank">
+        <mx-button class="sign-up" href="https://web.hurdlr.com/onboarding/selectBusiness" target="_blank">
           Sign up for Hurdlr
         </mx-button>
       </div>
@@ -80,6 +80,7 @@
 </div>
 
 <script type="module">
+const SESSION_ID = '<%= params[:session_id] %>';
 const apiError = '<%= @error&.gsub(/'/, "\\\\'") %>';
 if (apiError !== '') console.error(apiError);
 
@@ -152,6 +153,9 @@ setTimeout(() => {
 const menu = root.querySelector("mx-menu");
 const menuButton = root.querySelector(".menu-button");
 if (menu && menuButton) menu.anchorEl = menuButton;
+menuButton.addEventListener('click', () => {
+  logEvent('widget_open_menu');
+});
 
 const menuItems = root.querySelectorAll("mx-menu-item");
 if (menuItems.length) {
@@ -177,4 +181,31 @@ window.addEventListener("message", (e) => {
     }
   }
 });
+
+root.addEventListener('click', (e) => {
+  if (e.target.closest('.sign-up')) {
+    logEvent('widget_click_sign_up');
+  } else if (e.target.closest('a img#logo')) {
+    logEvent('widget_click_partner_logo');
+  }
+});
+
+function logEvent(eventType, eventData) {
+  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      event_type: eventType,
+      event_data: eventData,
+      component: 'hurdlr',
+     })
+  });
+}
+
+async function _fetch(url, options) {
+  options = { ...options, headers: { 'Content-Type': 'application/json' } }
+  const response = await fetch(url, options)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+}
 </script>
