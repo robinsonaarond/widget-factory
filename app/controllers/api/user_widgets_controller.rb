@@ -1,43 +1,38 @@
 class Api::UserWidgetsController < ApplicationController
-  before_action :set_user_widget, only: [:create, :update, :destroy]
   skip_before_action :verify_authenticity_token
 
-  # POST /api/user_widgets
-  def create
-    return render json: @user_widget, status: :ok if @user_widget.present? # Prevent duplicates
-
-    @user_widget = UserWidget.new(user_widget_params)
-    @user_widget.user_uuid = session[:current_user][:uuid]
-
-    if @user_widget.save
-      render json: @user_widget, status: :created
-    else
-      render json: @user_widget.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /api/user_widgets/1
-  def update
-    if @user_widget.update(user_widget_params)
-      render json: @user_widget
-    else
-      render json: @user_widget.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /api/user_widgets/1
-  def destroy
-    @user_widget.destroy
-  end
-
-  private
-
-  def set_user_widget
+  # PATCH /api/user_widgets
+  def update_order
     user_uuid = session[:current_user][:uuid]
-    @user_widget = UserWidget.find_by(widget_id: params[:id] || params[:widget_id], user_uuid: user_uuid)
+    params[:widget_ids].each_with_index do |widget_id, index|
+      user_widget = UserWidget.find_or_initialize_by(widget_id: widget_id, user_uuid: user_uuid)
+      user_widget.row_order_position = index + 1
+      user_widget.save
+    end
+    render json: { status: :ok }
   end
 
-  def user_widget_params
-    params.permit(:widget_id, :row_order_position)
+  # DELETE /api/user_widgets/:id
+  def destroy
+    user_uuid = session[:current_user][:uuid]
+    user_widget = UserWidget.find_or_initialize_by(widget_id: params[:id], user_uuid: user_uuid)
+    user_widget.removed = true
+    if user_widget.save
+      render json: { status: :ok }
+    else
+      render json: { status: :error }
+    end
+  end
+
+  # POST /api/user_widgets/:id/restore
+  def restore
+    user_uuid = session[:current_user][:uuid]
+    user_widget = UserWidget.find_or_initialize_by(widget_id: params[:id] || params[:widget_id], user_uuid: user_uuid)
+    user_widget.removed = false
+    if user_widget.save
+      render json: { status: :ok }
+    else
+      render json: { status: :error }
+    end
   end
 end

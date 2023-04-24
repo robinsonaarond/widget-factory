@@ -1,11 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user_uuid: MyString
+  user_uuid: 1234
   widget: one
   row_order: 1
+  removed: false
 
 two:
-  user_uuid: MyString
+  user_uuid: 1234
   widget: two
   row_order: 1
+  removed: true

@@ -17,8 +17,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :widgets
-    resources :user_widgets
     post "events" => "events#create"
+    patch "user_widgets", to: "user_widgets#update_order"
+    delete "user_widgets/:id", to: "user_widgets#destroy", as: :destroy_user_widget
+    post "user_widgets/:id/restore", to: "user_widgets#restore", as: :restore_user_widget
     post "jwt" => "jwt#index"
   end
 

@@ -5,41 +5,34 @@ class Api::UserWidgetsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     @user_uuid = "1234"
-    @widget = widgets(:one)
+    @widget_ids = [widgets(:one).id, widgets(:two).id, widgets(:three).id]
     @jwt = get_jwt
   end
 
-  test "should create user widget" do
-    assert_difference('UserWidget.count') do
-      post api_user_widgets_path, params: { widget_id: @widget.id, row_order_position: 1 }, headers: { "Authorization": @jwt }
-    end
-    assert_response :created
-    response_body = JSON.parse(response.body, symbolize_names: true)
-    assert_equal @widget.id, response_body[:widget_id]
-    assert_equal @user_uuid, response_body[:user_uuid]
-  end
-
-  test "should not create duplicate user widget" do
-    user_widget = UserWidget.create(widget_id: @widget.id, user_uuid: @user_uuid, row_order_position: 1)
-    assert_no_difference('UserWidget.count') do
-      post api_user_widgets_path, params: { widget_id: @widget.id, row_order_position: 2 }, headers: { "Authorization": @jwt }
-    end
-    assert_response :ok
-    response_body = JSON.parse(response.body, symbolize_names: true)
-    assert_equal user_widget.id, response_body[:id]
-  end
-
-  test "should update user widget" do
-    user_widget = UserWidget.create(widget_id: @widget.id, user_uuid: @user_uuid, row_order_position: :last)
-    patch api_user_widget_path(@widget.id), params: { row_order_position: :first }, headers: { "Authorization": @jwt }
+  test "should set widget order" do
+    patch api_user_widgets_path, params: { widget_ids: @widget_ids }, headers: { "Authorization": @jwt }
     assert_response :success
+    assert_equal @widget_ids, UserWidget.where(user_uuid: @user_uuid).pluck(:widget_id)
+    patch api_user_widgets_path, params: { widget_ids: @widget_ids.reverse }, headers: { "Authorization": @jwt }
+    assert_response :success
+    assert_equal @widget_ids.reverse, UserWidget.where(user_uuid: @user_uuid).pluck(:widget_id)
   end
 
-  test "should destroy user widget" do
-    user_widget = UserWidget.create(widget_id: @widget.id, user_uuid: @user_uuid, row_order_position: 1)
-    assert_difference('UserWidget.count', -1) do
-      delete api_user_widget_path(@widget.id), headers: { "Authorization": @jwt }
+  test "should remove user widget" do
+    delete api_destroy_user_widget_path(widgets(:one).id), headers: { "Authorization": @jwt }
+    assert_response :success
+    assert user_widgets(:one).removed
+  end
+
+  test "should remove widget that was not previously removed/ordered" do
+    assert_difference "UserWidget.count", 1 do
+      delete api_destroy_user_widget_path(widgets(:three).id), headers: { "Authorization": @jwt }
     end
-    assert_response :no_content
+  end
+
+  test "should restore user widget" do
+    post api_restore_user_widget_path(widgets(:two).id), headers: { "Authorization": @jwt }
+    assert_response :success
+    refute user_widgets(:two).removed
   end
 end
