@@ -5,7 +5,7 @@ class Api::WidgetsControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     response_body = JSON.parse(response.body)
-    assert_equal 2, response_body.length
+    assert_equal 3, response_body.length
   end
 
   test "should get single widget" do

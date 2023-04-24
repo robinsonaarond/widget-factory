@@ -21,3 +21,14 @@ two:
   activation_date: 2023-01-23 09:04:27
   internal: false
   updated_by: MyString
+
+three:
+  component: widget_three
+  partner: MyString
+  name: Widget Three
+  description: MyString
+  logo_link_url: MyString
+  status: draft
+  activation_date: 2023-01-23 09:04:27
+  internal: false
+  updated_by: MyString

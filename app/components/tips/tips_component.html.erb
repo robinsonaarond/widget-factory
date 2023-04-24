@@ -56,10 +56,12 @@ window.addEventListener("message", (e) => {
 function initMenu() {
   const menu = root.querySelector("mx-menu");
   const menuButton = root.querySelector(".menu-button");
-  if (menu && menuButton) menu.anchorEl = menuButton;
-  menuButton.addEventListener('click', () => {
-    logEvent('widget_open_menu');
-  });
+  if (menu && menuButton) {
+    menu.anchorEl = menuButton;
+    menuButton.addEventListener('click', () => {
+      logEvent('widget_open_menu');
+    });
+  }
   
   const menuItems = root.querySelectorAll("mx-menu-item");
   if (menuItems.length) {

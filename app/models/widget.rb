@@ -5,6 +5,8 @@ class Widget < ApplicationRecord
   attribute :remove_logo, :boolean
   after_save :purge_logo, if: :remove_logo
 
+  has_many :user_widgets, dependent: :destroy
+
   scope :activated_widgets, -> {
     where(status: Widget.statuses[:ready], activation_date: ..Time.zone.now)
       .or(where(status: Widget.statuses[:ready], activation_date: nil))

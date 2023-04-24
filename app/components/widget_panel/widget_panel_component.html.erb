@@ -10,19 +10,19 @@
       <span class="add-remove-widgets">Widgets</span>
     </mx-button>
   </header>
-  <% if @user_widgets.any? %>
+  <% if @widgets.any? %>
     <p id="reorder-help" class="sr-only">
       Activate the reorder button and use the arrow keys to reorder the list. Press Escape or Tab to cancel the reordering.
     </p>
     <ol class="widget-grid overflow-hidden md:pb-96" aria-labelledby="widgets-heading">
-      <% @user_widgets.each do |user_widget| %>
-        <li data-widget-id="<%= user_widget.widget.id %>" data-widget-component="<%= user_widget.widget.component %>" data-widget-name="<%= user_widget.widget.name %>">
-          <%= render user_widget.widget.view_component.new %>
+      <% @widgets.each do |widget| %>
+        <li data-widget-id="<%= widget.id %>" data-widget-component="<%= widget.component %>" data-widget-name="<%= widget.name %>">
+          <%= render widget.view_component.new %>
         </li>
       <% end %>
     </ol>
   <% end %>
-  <div class="empty-state text-center <%= @user_widgets.any? ? "hidden" : "" %>">
+  <div class="empty-state text-center <%= @widgets.any? ? "hidden" : "" %>">
     <div class="text-h5 my-0 mt-24 mb-8">
       No widgets to show yet
     </div>
@@ -278,8 +278,8 @@ function reorderWidgetElements() {
       (a, b) => getOrder(a) - getOrder(b)
     );
     orderedWidgets.forEach(widget => draggedWidget.parentElement.appendChild(widget));
-    updateUserWidget();
-    logEvent('widget_reorder_widgets');
+    updateUserWidgets(orderedWidgets.map(w => w.dataset.widgetId));
+    logEvent('widget_reorder_widgets', null, draggedWidget.dataset.widgetComponent);
     overWidget = null;
   }
   resetWidgetOrderAttributes();
@@ -308,12 +308,11 @@ function getPointer(e) {
   }
 }
 
-function updateUserWidget() {
+function updateUserWidgets(orderedWidgetIds) {
   if (!draggedWidget) return;
-  const widgetId = draggedWidget.dataset.widgetId;
-  _fetch(`/api/user_widgets/${widgetId}?session_id=${SESSION_ID}`, {
+  _fetch(`/api/user_widgets/?session_id=${SESSION_ID}`, {
     method: 'PATCH',
-    body: JSON.stringify({ row_order_position: getOrder(draggedWidget) })
+    body: JSON.stringify({ widget_ids: orderedWidgetIds })
   });
 }
 function destroyUserWidget(widgetId) {
@@ -337,7 +336,7 @@ async function _fetch(url, options) {
     <div slot="header-left">Library</div>
     <div class="widget-library-grid">
       <% @active_widgets.each do |widget| %>
-        <% added = @user_widgets.find_by(widget: widget).present? %>
+        <% added = @widgets.include?(widget) %>
         <div data-widget-id="<%= widget.id %>" class="px-16 pt-16 pb-24 bg-white rounded-lg">
           <div class="px-8 mb-20">
             <mx-button btn-type="text" icon="icon icon-plus-circle" class="add-button <%= added ? "hidden" : "" %>">
@@ -417,7 +416,7 @@ addButtons.forEach((button) => {
     addButton.querySelector('.button-text').innerText = 'Adding widget'
     addButton.disabled = true;
     try {
-      await createUserWidget(widgetId);
+      await restoreUserWidget(widgetId);
       // Replace add button with remove button
       addButton.classList.add('hidden')
       removeButtonWrapper.classList.remove('hidden');
@@ -460,22 +459,21 @@ removeButtons.forEach((button) => {
   });
 });
 
-function logEvent(eventType, eventData) {
+function logEvent(eventType, eventData, component = 'widget_panel') {
   _fetch(`/api/events/?session_id=${SESSION_ID}`, {
     method: 'POST',
     body: JSON.stringify({
       event_type: eventType,
       event_data: eventData,
-      component: 'widget_panel',
+      component,
      })
   });
 }
 
-function createUserWidget(widgetId) {
+function restoreUserWidget(widgetId) {
   logEvent('widget_add_via_library');
-  return _fetch(`/api/user_widgets?session_id=${SESSION_ID}`, {
+  return _fetch(`/api/user_widgets/${widgetId}/restore?session_id=${SESSION_ID}`, {
     method: 'POST',
-    body: JSON.stringify({ widget_id: widgetId, row_order_position: 'last' })
   })
 }
 function destroyUserWidget(widgetId) {
