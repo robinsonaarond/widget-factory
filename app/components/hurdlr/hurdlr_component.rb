@@ -41,7 +41,7 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
       message = e.message || "Unknown error getting Hurdlr data"
       @widget.log_event!(
         'widget_error',
-        {message: message, endpoint: endpoint, payload: payload},
+        {message: message, endpoint: request.env[:REQUEST_URI]},
         session.dig(:current_user, :uuid),
         session.dig(:current_user, :company_uuid),
         session.dig(:current_user, :board_uuid),

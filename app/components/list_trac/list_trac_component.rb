@@ -18,6 +18,14 @@ class ListTrac::ListTracComponent < ViewComponent::Base
     rescue => e
       @error = e.message
       @error_with_api = e.is_a?(RestClient::Exception) || e.is_a?(SocketError)
+      @widget.log_event!(
+        'widget_error',
+        {message: e.message, endpoint: request.env[:REQUEST_URI]},
+        session.dig(:current_user, :uuid),
+        session.dig(:current_user, :company_uuid),
+        session.dig(:current_user, :board_uuid),
+        session.dig(:current_user, :office_uuid)  
+      )
     end
   end
 
@@ -29,27 +37,15 @@ class ListTrac::ListTracComponent < ViewComponent::Base
       # TrackingValues: "364512302",
       ResponseType: "summary"
     }
-    begin
-      response = RestClient::Request.execute(
-        method: :get,
-        timeout: 10,
-        url: "https://b2b.listtrac.com/RESO/OData/InternetTracking?#{params.to_query}",
-        verify_ssl: false
-      )
-      json = JSON.parse(response, symbolize_names: true)
-      [json[:value] || [], (json[:status] == "ok") ? nil : json[:description]]
-    rescue RestClient::ExceptionWithResponse => e
-      message = e.message || "Unknown error getting listings from ListTrac API"
-      @widget.log_event!(
-        'widget_error',
-        {message: message, endpoint: endpoint, payload: payload},
-        session.dig(:current_user, :uuid),
-        session.dig(:current_user, :company_uuid),
-        session.dig(:current_user, :board_uuid),
-        session.dig(:current_user, :office_uuid)  
-      )
-      [{}, message]
-    end
+    response = RestClient::Request.execute(
+      method: :get,
+      timeout: 10,
+      url: "https://b2b.listtrac.com/RESO/OData/InternetTracking?#{params.to_query}",
+      verify_ssl: false
+    )
+    json = JSON.parse(response, symbolize_names: true)
+    raise json[:description] if json[:status] != "ok"
+    json[:value] || []
   end
 
   def token
