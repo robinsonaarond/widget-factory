@@ -46,7 +46,7 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
         session.dig(:current_user, :company_uuid),
         session.dig(:current_user, :board_uuid),
         session.dig(:current_user, :office_uuid)  
-      )
+      ) rescue nil
       [{}, message]
     end
   end
