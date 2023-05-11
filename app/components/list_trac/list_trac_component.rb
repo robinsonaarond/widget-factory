@@ -1,31 +1,18 @@
 # frozen_string_literal: true
 
-class ListTrac::ListTracComponent < ViewComponent::Base
-  def initialize(library_mode: false)
-    @library_mode = library_mode
-  end
-
+class ListTrac::ListTracComponent < ApplicationComponent
   def before_render
-    @library_mode ||= params[:library_mode]
+    super
+    return if @error.present?
     @listings = []
-    @error = nil
-    @error_with_api = false
     begin
-      @widget = Widget.find_by(component: "list_trac")
       @token = token unless @library_mode
       @listings = @library_mode ? demo_listings : agent_listings
       @listings = @listings.sort_by { |listing| listing[:ViewCount] }.reverse
     rescue => e
       @error = e.message
       @error_with_api = e.is_a?(RestClient::Exception) || e.is_a?(SocketError)
-      @widget.log_event!(
-        'widget_error',
-        {message: e.message, endpoint: request.env[:REQUEST_URI]},
-        session.dig(:current_user, :uuid),
-        session.dig(:current_user, :company_uuid),
-        session.dig(:current_user, :board_uuid),
-        session.dig(:current_user, :office_uuid)  
-      ) rescue nil
+      log_error(e)
     end
   end
 

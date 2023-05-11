@@ -1,22 +1,11 @@
 # frozen_string_literal: true
 
-class Hurdlr::HurdlrComponent < ViewComponent::Base
-  def initialize(library_mode: false)
-    @library_mode = library_mode
-  end
-
+class Hurdlr::HurdlrComponent < ApplicationComponent
   def before_render
-    @library_mode ||= params[:library_mode]
+    super
+    return if @error.present?
     @data = {}
-    @error = nil
-    @error_with_api = false
-    begin
-      @widget = Widget.find_by(component: "hurdlr")
-      @data, @error = @library_mode ? [demo_data, nil] : user_vitals
-      @error_with_api = @error.present?
-    rescue => e
-      @error = e.message
-    end
+    @data, @error = @library_mode ? [demo_data, nil] : user_vitals
   end
 
   def user_vitals
@@ -36,18 +25,11 @@ class Hurdlr::HurdlrComponent < ViewComponent::Base
         headers: {Authorization: "Bearer #{token}"}
       )
       data = JSON.parse(response, symbolize_names: true)
-      [data, data[:errorMessage]]
-    rescue RestClient::ExceptionWithResponse => e
-      message = e.message || "Unknown error getting Hurdlr data"
-      @widget.log_event!(
-        'widget_error',
-        {message: message, endpoint: request.env[:REQUEST_URI]},
-        session.dig(:current_user, :uuid),
-        session.dig(:current_user, :company_uuid),
-        session.dig(:current_user, :board_uuid),
-        session.dig(:current_user, :office_uuid)  
-      ) rescue nil
-      [{}, message]
+      [data, data[:errorMessage]] # This sort of error message does not need to be logged
+    rescue => e
+      @error_with_api = true
+      log_error(e)
+      [{}, e.message || "Unknown error getting Hurdlr data"]
     end
   end
 
