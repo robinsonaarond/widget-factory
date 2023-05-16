@@ -67,6 +67,10 @@ if (addButton) {
 window.addEventListener('message', e => {
   const { type, payload } = e.data;
   if (type === 'REMOVE') removeWidget(payload.component);
+  else if (e.data.type === 'LOG_EVENT') {
+    const { eventType, eventData, component } = e.data.payload;
+    logEvent(eventType, eventData, component);
+  }
   else if (e.data.type === "SET_LOADING") {
     const { isLoading, component } = e.data.payload;
     if (component === 'widget_panel') setLoading(isLoading);
