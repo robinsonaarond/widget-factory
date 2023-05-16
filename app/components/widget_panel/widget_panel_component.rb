@@ -13,5 +13,19 @@ class WidgetPanel::WidgetPanelComponent < ViewComponent::Base
       .joins("LEFT OUTER JOIN user_widgets ON user_widgets.widget_id = widgets.id AND user_widgets.user_uuid = '#{@user_uuid}'")
       .where(id: visible_widget_ids)
       .order('user_widgets.row_order ASC NULLS LAST')
+    log_load_events unless current_page?(component_named_expanded_path)
+  end
+
+  def log_load_events
+    @widgets.each do |widget|
+      widget.log_event!(
+        'widget_dashboard_load',
+        {},
+        session.dig(:current_user, :uuid),
+        session.dig(:current_user, :company_uuid),
+        session.dig(:current_user, :board_uuid),
+        session.dig(:current_user, :office_uuid)
+      )
+    end
   end
 end
