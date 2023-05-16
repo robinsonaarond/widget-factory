@@ -85,7 +85,7 @@ function setLoading(isLoading) {
 function removeWidget(component) {
   const widget = root.querySelector(`[data-widget-component="${component}"]`);
   destroyUserWidget(widget.dataset.widgetId);
-  logEvent('widget_remove_via_menu');
+  logEvent('widget_remove_via_menu', null, component);
   widget.remove();
   if (!root.querySelector('li')) {
     root.querySelector('.empty-state').classList.remove('hidden');
@@ -94,13 +94,13 @@ function removeWidget(component) {
   }
 }
 
-function logEvent(eventType, eventData) {
+function logEvent(eventType, eventData, component = 'widget_panel') {
   _fetch(`/api/events/?session_id=${SESSION_ID}`, {
     method: 'POST',
     body: JSON.stringify({
       event_type: eventType,
       event_data: eventData,
-      component: 'widget_panel',
+      component,
      })
   });
 }
@@ -337,7 +337,7 @@ async function _fetch(url, options) {
     <div class="widget-library-grid">
       <% @active_widgets.each do |widget| %>
         <% added = @widgets.include?(widget) %>
-        <div data-widget-id="<%= widget.id %>" class="px-16 pt-16 pb-24 bg-white rounded-lg">
+        <div data-widget-id="<%= widget.id %>" data-widget-component="<%= widget.component %>" class="px-16 pt-16 pb-24 bg-white rounded-lg">
           <div class="px-8 mb-20">
             <mx-button btn-type="text" icon="icon icon-plus-circle" class="add-button <%= added ? "hidden" : "" %>">
               <span class="button-text">Add widget</span>
@@ -409,6 +409,7 @@ const addButtons = root.querySelectorAll(".add-button");
 addButtons.forEach((button) => {
   button.addEventListener("click", async (e) => {
     const widgetId = e.target.closest('[data-widget-id]').dataset.widgetId;
+    const component = e.target.closest('[data-widget-component]').dataset.widgetComponent;
     // Show "Adding widget" button
     const addButton = e.target.closest('mx-button');
     const removeButtonWrapper = addButton.parentElement.querySelector('.remove-button-wrapper');
@@ -416,7 +417,7 @@ addButtons.forEach((button) => {
     addButton.querySelector('.button-text').innerText = 'Adding widget'
     addButton.disabled = true;
     try {
-      await restoreUserWidget(widgetId);
+      await restoreUserWidget(widgetId, component);
       // Replace add button with remove button
       addButton.classList.add('hidden')
       removeButtonWrapper.classList.remove('hidden');
@@ -433,6 +434,7 @@ const removeButtons = root.querySelectorAll(".remove-button");
 removeButtons.forEach((button) => {
   button.addEventListener("click", async (e) => {
     const widgetId = e.target.closest('[data-widget-id]').dataset.widgetId;
+    const component = e.target.closest('[data-widget-component]').dataset.widgetComponent;
     const removeButton = e.target.closest('mx-button');
     const removeButtonWrapper = e.target.closest('.remove-button-wrapper');
     const addedButton = removeButtonWrapper.querySelector('.added-button');
@@ -443,7 +445,7 @@ removeButtons.forEach((button) => {
     removeButton.querySelector('.button-text').innerText = 'Removing widget'
     removeButton.disabled = true;
     try {
-      await destroyUserWidget(widgetId);
+      await destroyUserWidget(widgetId, component);
       // Replace remove button with add button
       addButton.classList.remove('hidden');
       removeButtonWrapper.classList.add('hidden');
@@ -470,14 +472,14 @@ function logEvent(eventType, eventData, component = 'widget_panel') {
   });
 }
 
-function restoreUserWidget(widgetId) {
-  logEvent('widget_add_via_library');
+function restoreUserWidget(widgetId, component) {
+  logEvent('widget_add_via_library', null, component);
   return _fetch(`/api/user_widgets/${widgetId}/restore?session_id=${SESSION_ID}`, {
     method: 'POST',
   })
 }
-function destroyUserWidget(widgetId) {
-  logEvent('widget_remove_via_library');
+function destroyUserWidget(widgetId, component) {
+  logEvent('widget_remove_via_library', null, component);
   return _fetch(`/api/user_widgets/${widgetId}?session_id=${SESSION_ID}`, {
     method: 'DELETE',
   })
