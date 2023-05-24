@@ -18,7 +18,7 @@ class ListTrac::ListTracComponent < ApplicationComponent
 
   def agent_listings
     params = {
-      access_token: token,
+      access_token: @token,
       TrackingType: "Agent",
       TrackingValues: session[:current_user][:mls_number],
       # TrackingValues: "364512302",
