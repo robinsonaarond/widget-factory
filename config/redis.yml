@@ -28,4 +28,4 @@ uat:
 
 production:
   <<: *defaults
-  host: widget-factory-prs.redis.moxi.bz
+  host: widget-factory-prs-pr.redis.moxi.bz
