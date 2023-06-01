@@ -3,7 +3,7 @@ class Api::WidgetsController < ApplicationController
 
   # GET /api/widgets
   def index
-    @widgets = Widget.where(internal: false)
+    @widgets = Widget.all
     render json: @widgets
   end
 

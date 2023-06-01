@@ -3,8 +3,8 @@ class Api::EventsController < ApplicationController
 
   # POST /api/events
   def create
-    widget = Widget.find_by(component: params[:component])
-    widget.log_event!(
+    Widget.log_event(
+      params[:component],
       params[:event_type],
       params[:event_data],
       session.dig(:current_user, :uuid),

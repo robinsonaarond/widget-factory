@@ -17,7 +17,8 @@ class ApplicationComponent < ViewComponent::Base
   end
 
   def log_error(e)
-    @widget.log_event!(
+    Widget.log_event(
+      @widget.component,
       "widget_error",
       {message: e.message, endpoint: request.env[:REQUEST_URI]},
       session.dig(:current_user, :uuid),
