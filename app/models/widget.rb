@@ -50,7 +50,7 @@ class Widget < ApplicationRecord
     save
   end
 
-  def log_event!(event_type, event_data = {}, user_uuid, company_uuid, board_uuid, office_uuid)
+  def self.log_event(component, event_type, event_data = {}, user_uuid, company_uuid, board_uuid, office_uuid)
     EventLoggerJob.perform_async(
       event_type,
       component,

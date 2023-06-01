@@ -18,7 +18,8 @@ class WidgetPanel::WidgetPanelComponent < ViewComponent::Base
 
   def log_load_events
     @widgets.each do |widget|
-      widget.log_event!(
+      Widget.log_event(
+        widget.component,
         "widget_dashboard_load",
         {},
         session.dig(:current_user, :uuid),
