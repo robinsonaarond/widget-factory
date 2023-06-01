@@ -8,7 +8,6 @@ one:
   logo_link_url: MyString
   status: ready
   activation_date: 2023-01-23 09:04:27
-  internal: false
   updated_by: MyString
 
 two:
@@ -19,7 +18,6 @@ two:
   logo_link_url: MyString
   status: draft
   activation_date: 2023-01-23 09:04:27
-  internal: false
   updated_by: MyString
 
 three:
@@ -30,5 +28,4 @@ three:
   logo_link_url: MyString
   status: draft
   activation_date: 2023-01-23 09:04:27
-  internal: false
   updated_by: MyString
