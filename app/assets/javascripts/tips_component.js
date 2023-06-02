@@ -39,6 +39,6 @@ function updateTip(e) {
 // Log a CTA click event in widget analytics
 root.addEventListener('click', e => {
   if (e.target.closest('a[target="_blank"]')) {
-    window.WidgetFactory.logEvent('widget_click_cta');
+    window.WidgetFactory.logEvent('widget_click_cta', null, 'tips');
   }
 });
