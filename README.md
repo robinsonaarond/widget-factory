@@ -81,9 +81,7 @@ The `user_widgets` table is also used to store the user's custom sorting of widg
 
 ### Create a New Widget Component
 
-A new widget component may be created using the Rails generator. The component must be namespaced for the dynamic routing to work. For example, to create a
-
-For example, a `todo_list` component would be namespaced as `TodoList::TodoListComponent`. To create such a component, run the following command from the project root:
+A new widget component may be created using the Rails generator. The component must be namespaced for the dynamic routing to work. For example, a `todo_list` component would be namespaced as `TodoList::TodoListComponent`. To create such a component, run the following command from the project root:
 
 `bin/rails g component TodoList::TodoList`
 
