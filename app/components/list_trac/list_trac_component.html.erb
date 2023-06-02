@@ -3,304 +3,172 @@
 
 <% if current_page?(component_named_expanded_path('list_trac')) %>
 
-<%# Expanded Widget %>
-<div class="list_trac w-screen h-screen">
-  <mx-modal large close-on-escape="false">
-    <div slot="header-left"><%= @widget.name %> (Last 30 days)</div>
-    <div slot="header-right" class="flex items-center space-x-16">
-      <mx-button class="close-button" btn-type="text">Close</mx-button>
-    </div>
-    <mx-table></mx-table>
-    <div slot="footer-left">
-      <% if @widget.logo.attached? %>
-        <a href="<%= @widget.logo_link_url %>" target="_blank">
-          <img id="logo" src="<%= @widget.logo_url %>" width="105" height="48" alt="<%= @widget.partner %>" />
-        </a>
-      <% end %>
-    </div>
-  </mx-modal>
-</div>
+  <%# Expanded Widget %>
+  <%# TODO: Factor out expanded component %>
+  <div class="list_trac w-screen h-screen">
+    <mx-modal large close-on-escape="false">
+      <div slot="header-left"><%= @widget.name %> (Last 30 days)</div>
+      <div slot="header-right" class="flex items-center space-x-16">
+        <mx-button class="close-button" btn-type="text">Close</mx-button>
+      </div>
+      <mx-table></mx-table>
+      <div slot="footer-left">
+        <% if @widget.logo.attached? %>
+          <a href="<%= @widget.logo_link_url %>" target="_blank">
+            <img id="logo" src="<%= @widget.logo_url %>" width="105" height="48" alt="<%= @widget.partner %>" />
+          </a>
+        <% end %>
+      </div>
+    </mx-modal>
+  </div>
 
-<%# Expanded Widget Script %>
-<script type="module">
-const SESSION_ID = '<%= params[:session_id] %>';
-const root = document.querySelector('.list_trac');
-const sendCloseMessage = () => {
-  window.parent.postMessage(
-    { type: "CLOSE_EXPANDED", payload: {} },
-    "*"
-  );
-}
-const modal = root.querySelector("mx-modal");
-const observer = new MutationObserver(mutations => {
-  requestAnimationFrame(() => {
-    modal.isOpen = true;
+  <%# Expanded Widget Script %>
+  <script type="module">
+  const SESSION_ID = '<%= params[:session_id] %>';
+  const root = document.querySelector('.list_trac');
+  const sendCloseMessage = () => {
     window.parent.postMessage(
-      { type: "SET_LOADING", payload: { component: 'list_trac', isLoading: false } },
+      { type: "CLOSE_EXPANDED", payload: {} },
       "*"
     );
-  });
-  observer.disconnect();
-});
-observer.observe(root, { subtree: true, childList: true });
-modal.addEventListener("mxClose", sendCloseMessage);
-/* We have to recreate the close button since we are overriding the default content of the 
-/* header-right slot. */
-const closeButton = root.querySelector(".close-button");
-closeButton.addEventListener("click", sendCloseMessage);
-
-/* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") sendCloseMessage();
-});
-
-document.addEventListener('click', (e) => {
-  if (e.target.closest('a img#logo')) {
-    logEvent('widget_click_partner_logo');
   }
-});
-
-const table = root.querySelector("mx-table");
-table.rows = JSON.parse('<%= raw @listings.to_json %>');
-table.columns = [
-  { heading: "Address", property: "Address", sortable: true },
-  { heading: "Views", property: "ViewCount", sortable: true },
-  { heading: "Leads", property: "InquiryCount", sortable: true },
-  { isActionColumn: true } // Design has a blank column here
-];
-
-function logEvent(eventType, eventData) {
-  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
-    method: 'POST',
-    body: JSON.stringify({
-      event_type: eventType,
-      event_data: eventData,
-      component: 'list_trac',
-     })
+  const modal = root.querySelector("mx-modal");
+  const observer = new MutationObserver(mutations => {
+    requestAnimationFrame(() => {
+      modal.isOpen = true;
+      window.parent.postMessage(
+        { type: "SET_LOADING", payload: { component: 'list_trac', isLoading: false } },
+        "*"
+      );
+    });
+    observer.disconnect();
   });
-}
+  observer.observe(root, { subtree: true, childList: true });
+  modal.addEventListener("mxClose", sendCloseMessage);
+  /* We have to recreate the close button since we are overriding the default content of the 
+  /* header-right slot. */
+  const closeButton = root.querySelector(".close-button");
+  closeButton.addEventListener("click", sendCloseMessage);
 
-async function _fetch(url, options) {
-  options = { ...options, headers: { 'Content-Type': 'application/json' } }
-  const response = await fetch(url, options)
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  /* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") sendCloseMessage();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('a img#logo')) {
+      logEvent('widget_click_partner_logo');
+    }
+  });
+
+  const table = root.querySelector("mx-table");
+  table.rows = JSON.parse('<%= raw @listings.to_json %>');
+  table.columns = [
+    { heading: "Address", property: "Address", sortable: true },
+    { heading: "Views", property: "ViewCount", sortable: true },
+    { heading: "Leads", property: "InquiryCount", sortable: true },
+    { isActionColumn: true } // Design has a blank column here
+  ];
+
+  function logEvent(eventType, eventData) {
+    _fetch(`/api/events/?session_id=${SESSION_ID}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        event_type: eventType,
+        event_data: eventData,
+        component: 'list_trac',
+      })
+    });
   }
-}
 
-</script>
+  async function _fetch(url, options) {
+    options = { ...options, headers: { 'Content-Type': 'application/json' } }
+    const response = await fetch(url, options)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  }
+  </script>
 
 <% else %>
 
-<%# Inline Widget %>
-<div class="list_trac inline-widget relative flex flex-col border text-primary shadow-3 rounded-lg overflow-hidden m-8">
-  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
-    <p id="heading" role="heading" aria-level="2" class="my-0 subtitle3">
-      <%= @widget.name %>
-    </p>
-  </header>
-  <div class="flex-1 py-12 px-16 bg-gray relative min-w-0 max-w-full overflow-hidden">
-    <table class="w-full max-w-full overflow-hidden min-w-0 rounded-xl bg-white shadow-1" cellspacing="0">
-      <thead class="h-32">
-        <tr>
-          <th class="text-left pl-24">Address</th>
-          <th>Views</th>
-          <th>Leads</th>
-        </tr>
-      </thead>
-      <tbody class="caption2">
-        <% if @listings.any? %>
-          <% @listings.first(4).each do |listing| %>
+  <%# Inline Widget %>
+  <%= render(InlineWidgetComponent.new(widget: @widget, expand_url: @expand_url, library_mode: @library_mode, error: @error)) do %>
+    <div class="flex-1 py-12 px-16 bg-gray relative min-w-0 max-w-full overflow-hidden">
+      <table class="w-full max-w-full overflow-hidden min-w-0 rounded-xl bg-white shadow-1" cellspacing="0">
+        <thead class="h-32">
           <tr>
-            <td title="<%= listing[:Address] %>">
-              <%= listing[:Address] %>
-            </td>
-            <td><%= listing[:ViewCount] %></td>
-            <td><%= listing[:InquiryCount] %></td>
+            <th class="text-left pl-24">Address</th>
+            <th>Views</th>
+            <th>Leads</th>
           </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td colspan="3">
-              <div class="flex flex-col items-center justify-center">
-                <%= image_tag "design-version-control.svg", alt: "", class: "w-72 h-72 mb-8" %>
-                <p class="caption2 my-0 whitespace-normal text-center">
-                  We know you're working hard. When you have listings, you'll see them here.
-                </p>
-              </div>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-      <% if @listings.any? %>
-        <tfoot>
-          <tr>
-            <td colspan="3">
-              <% remaining = @listings.count - 4 %>
-              <% if remaining > 0 %>
-                <button class="view-more">View <%= remaining %> more</button>
-              <% end %>
-            </td>
-          </tr>
-        </tfoot>
-      <% end %>
-    </table>
-    <div class="hidden loading absolute inset-0 w-full h-full flex-col items-center justify-center bg-white">
-      <mx-circular-progress class="mb-20"></mx-circular-progress>
-      <p class="subtitle3 my-0">Hold Tight!</p>
-      <p class="caption1 my-0">We should be ready in no time</p>
-    </div>
-    <% if @error.present? %>
-      <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-white">
-        <svg class="mb-10" width="4.5625rem" height="4.5rem" viewBox="0 0 73 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="36.5" cy="36" r="36" fill="var(--primary)"/>
-          <path d="M23.051 24.2611C23.051 25.6207 21.0133 25.6207 21.0133 24.2611C21.0133 22.9032 23.051 22.9032 23.051 24.2611Z" fill="white"/>
-          <path d="M26.0265 24.2611C26.0265 25.6207 23.9888 25.6207 23.9888 24.2611C23.9888 22.9032 26.0265 22.9032 26.0265 24.2611Z" fill="white"/>
-          <path d="M28.9605 24.2611C28.9605 25.6207 26.9227 25.6207 26.9227 24.2611C26.9227 22.9032 28.9605 22.9032 28.9605 24.2611Z" fill="white"/>
-          <path d="M53.168 19.4933H19.8318C18.364 19.4933 17.1414 20.6745 17.1414 22.1838V49.8554C17.1414 51.3232 18.3226 52.5459 19.8318 52.5459H53.2091C54.677 52.5459 55.8996 51.3646 55.8996 49.8554V22.1838C55.8582 20.7159 54.677 19.4933 53.1678 19.4933H53.168ZM19.8318 21.5724H53.2091C53.5355 21.5724 53.8205 21.8574 53.8205 22.1838V26.9517H19.2205V22.1838C19.2205 21.8574 19.5055 21.5724 19.8318 21.5724ZM53.168 50.4256H19.8318C19.5055 50.4256 19.2205 50.1406 19.2205 49.8142V28.9894H53.7809V49.8159C53.7793 50.1406 53.4944 50.4256 53.168 50.4256L53.168 50.4256Z" fill="white"/>
-          <path d="M30.9567 38.6064L32.0982 37.4649L33.2396 38.6064C33.4434 38.8101 33.6886 38.8913 33.9735 38.8913C34.2585 38.8913 34.5037 38.8101 34.7075 38.6064C35.115 38.1988 35.115 37.5461 34.7075 37.1386L33.566 35.9987L34.7075 34.8572C35.115 34.4497 35.115 33.7969 34.7075 33.3894C34.2999 32.9819 33.6472 32.9819 33.2396 33.3894L32.0982 34.5309L30.9567 33.3894C30.5492 32.9819 29.8964 32.9819 29.4889 33.3894C29.0813 33.7969 29.0813 34.4497 29.4889 34.8572L30.6303 35.9987L29.4889 37.1401C29.0813 37.5477 29.0813 38.2004 29.4889 38.608C29.6927 38.8117 29.9378 38.8929 30.2228 38.8929C30.5094 38.8929 30.7529 38.8101 30.9567 38.6064Z" fill="var(--secondary)"/>
-          <path d="M43.5095 33.4314C43.1019 33.0238 42.4492 33.0238 42.0416 33.4314L40.9002 34.5729L39.7587 33.4314C39.3512 33.0238 38.6984 33.0238 38.2909 33.4314C37.8833 33.8389 37.8833 34.4917 38.2909 34.8992L39.4323 36.0407L38.2909 37.1821C37.8833 37.5897 37.8833 38.2424 38.2909 38.65C38.4947 38.8537 38.7398 38.9349 39.0248 38.9349C39.3098 38.9349 39.5549 38.8537 39.7587 38.65L40.9002 37.5085L42.0416 38.65C42.2454 38.8537 42.4906 38.9349 42.7755 38.9349C43.0605 38.9349 43.3057 38.8537 43.5095 38.65C43.917 38.2424 43.917 37.5897 43.5095 37.1821L42.368 35.9993L43.5095 34.8578C43.917 34.4917 43.917 33.839 43.5095 33.4314V33.4314Z" fill="var(--secondary)"/>
-          <path d="M36.5 40.6445C33.6886 40.6445 31.1603 42.3161 30.0208 44.8822C29.7757 45.4124 30.0208 46.0237 30.551 46.2275C31.0811 46.4726 31.6924 46.2274 31.8962 45.6973C32.6699 43.8633 34.4641 42.6821 36.4603 42.6821C38.4169 42.6821 40.2094 43.8633 40.9849 45.6973C41.1473 46.1049 41.5548 46.3086 41.9226 46.3086C42.0452 46.3086 42.2076 46.2672 42.3302 46.2274C42.8603 45.9823 43.1038 45.4123 42.8603 44.8822C41.8398 42.3159 39.3118 40.6445 36.5005 40.6445L36.5 40.6445Z" fill="white"/>
-        </svg>
-        <p class="subtitle3 my-0">Oh no something happened!</p>
-        <p class="caption1 my-0 text-center">
-          <% if @error_with_api %>
-            We're having trouble connecting to ListTrac.<br />Please check back soon.
+        </thead>
+        <tbody class="caption2">
+          <% if @listings.any? %>
+            <% @listings.first(4).each do |listing| %>
+            <tr>
+              <td title="<%= listing[:Address] %>">
+                <%= listing[:Address] %>
+              </td>
+              <td><%= listing[:ViewCount] %></td>
+              <td><%= listing[:InquiryCount] %></td>
+            </tr>
+            <% end %>
           <% else %>
-            We're working on fixing things,<br />please check back soon.
+            <tr>
+              <td colspan="3">
+                <div class="flex flex-col items-center justify-center">
+                  <%= image_tag "design-version-control.svg", alt: "", class: "w-72 h-72 mb-8" %>
+                  <p class="caption2 my-0 whitespace-normal text-center">
+                    We know you're working hard. When you have listings, you'll see them here.
+                  </p>
+                </div>
+              </td>
+            </tr>
           <% end %>
-        </p>
-      </div>
-    <% end %>
-  </div>
-  <footer
-    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
-  >
-    <% unless @library_mode %>
-      <a href="<%= @widget.logo_link_url %>" target="_blank">
-    <% end %>
-    <img
-      id="logo"
-      src="<%= @widget.logo.attached? ? @widget.logo_url : "" %>"
-      class="<%= @widget.logo.attached? ? "" : "hidden" %>"
-      width="64"
-      height="30"
-      alt="<%= @widget.partner %>"
-    />
-    <% unless @library_mode %>
-      </a>
-    <% end %>
-    <div class="actions flex items-center space-x-8">
-      <% unless @library_mode %>
+        </tbody>
         <% if @listings.any? %>
-          <button class="expand-button flex items-center cursor-pointer" aria-label="Expand widget">
-            <span class="icon icon-grow"></span>
-          </button>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <% remaining = @listings.count - 4 %>
+                <% if remaining > 0 %>
+                  <button class="view-more">View <%= remaining %> more</button>
+                <% end %>
+              </td>
+            </tr>
+          </tfoot>
         <% end %>
-        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
-          <span class="icon icon-dots-three-vertical"></span>
-        </button>
-        <mx-menu>
-          <mx-menu-item>Remove widget</mx-menu-item>
-        </mx-menu>
+      </table>
+      <div class="hidden loading absolute inset-0 w-full h-full flex-col items-center justify-center bg-white">
+        <mx-circular-progress class="mb-20"></mx-circular-progress>
+        <p class="subtitle3 my-0">Hold Tight!</p>
+        <p class="caption1 my-0">We should be ready in no time</p>
+      </div>
+      <% if @error.present? %>
+        <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-white">
+          <svg class="mb-10" width="4.5625rem" height="4.5rem" viewBox="0 0 73 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="36.5" cy="36" r="36" fill="var(--primary)"/>
+            <path d="M23.051 24.2611C23.051 25.6207 21.0133 25.6207 21.0133 24.2611C21.0133 22.9032 23.051 22.9032 23.051 24.2611Z" fill="white"/>
+            <path d="M26.0265 24.2611C26.0265 25.6207 23.9888 25.6207 23.9888 24.2611C23.9888 22.9032 26.0265 22.9032 26.0265 24.2611Z" fill="white"/>
+            <path d="M28.9605 24.2611C28.9605 25.6207 26.9227 25.6207 26.9227 24.2611C26.9227 22.9032 28.9605 22.9032 28.9605 24.2611Z" fill="white"/>
+            <path d="M53.168 19.4933H19.8318C18.364 19.4933 17.1414 20.6745 17.1414 22.1838V49.8554C17.1414 51.3232 18.3226 52.5459 19.8318 52.5459H53.2091C54.677 52.5459 55.8996 51.3646 55.8996 49.8554V22.1838C55.8582 20.7159 54.677 19.4933 53.1678 19.4933H53.168ZM19.8318 21.5724H53.2091C53.5355 21.5724 53.8205 21.8574 53.8205 22.1838V26.9517H19.2205V22.1838C19.2205 21.8574 19.5055 21.5724 19.8318 21.5724ZM53.168 50.4256H19.8318C19.5055 50.4256 19.2205 50.1406 19.2205 49.8142V28.9894H53.7809V49.8159C53.7793 50.1406 53.4944 50.4256 53.168 50.4256L53.168 50.4256Z" fill="white"/>
+            <path d="M30.9567 38.6064L32.0982 37.4649L33.2396 38.6064C33.4434 38.8101 33.6886 38.8913 33.9735 38.8913C34.2585 38.8913 34.5037 38.8101 34.7075 38.6064C35.115 38.1988 35.115 37.5461 34.7075 37.1386L33.566 35.9987L34.7075 34.8572C35.115 34.4497 35.115 33.7969 34.7075 33.3894C34.2999 32.9819 33.6472 32.9819 33.2396 33.3894L32.0982 34.5309L30.9567 33.3894C30.5492 32.9819 29.8964 32.9819 29.4889 33.3894C29.0813 33.7969 29.0813 34.4497 29.4889 34.8572L30.6303 35.9987L29.4889 37.1401C29.0813 37.5477 29.0813 38.2004 29.4889 38.608C29.6927 38.8117 29.9378 38.8929 30.2228 38.8929C30.5094 38.8929 30.7529 38.8101 30.9567 38.6064Z" fill="var(--secondary)"/>
+            <path d="M43.5095 33.4314C43.1019 33.0238 42.4492 33.0238 42.0416 33.4314L40.9002 34.5729L39.7587 33.4314C39.3512 33.0238 38.6984 33.0238 38.2909 33.4314C37.8833 33.8389 37.8833 34.4917 38.2909 34.8992L39.4323 36.0407L38.2909 37.1821C37.8833 37.5897 37.8833 38.2424 38.2909 38.65C38.4947 38.8537 38.7398 38.9349 39.0248 38.9349C39.3098 38.9349 39.5549 38.8537 39.7587 38.65L40.9002 37.5085L42.0416 38.65C42.2454 38.8537 42.4906 38.9349 42.7755 38.9349C43.0605 38.9349 43.3057 38.8537 43.5095 38.65C43.917 38.2424 43.917 37.5897 43.5095 37.1821L42.368 35.9993L43.5095 34.8578C43.917 34.4917 43.917 33.839 43.5095 33.4314V33.4314Z" fill="var(--secondary)"/>
+            <path d="M36.5 40.6445C33.6886 40.6445 31.1603 42.3161 30.0208 44.8822C29.7757 45.4124 30.0208 46.0237 30.551 46.2275C31.0811 46.4726 31.6924 46.2274 31.8962 45.6973C32.6699 43.8633 34.4641 42.6821 36.4603 42.6821C38.4169 42.6821 40.2094 43.8633 40.9849 45.6973C41.1473 46.1049 41.5548 46.3086 41.9226 46.3086C42.0452 46.3086 42.2076 46.2672 42.3302 46.2274C42.8603 45.9823 43.1038 45.4123 42.8603 44.8822C41.8398 42.3159 39.3118 40.6445 36.5005 40.6445L36.5 40.6445Z" fill="white"/>
+          </svg>
+          <p class="subtitle3 my-0">Oh no something happened!</p>
+          <p class="caption1 my-0 text-center">
+            <% if @error_with_api %>
+              We're having trouble connecting to ListTrac.<br />Please check back soon.
+            <% else %>
+              We're working on fixing things,<br />please check back soon.
+            <% end %>
+          </p>
+        </div>
       <% end %>
     </div>
-  </footer>
-</div>
 
-<%# Inline Widget Script %>
-<script type="module">
-const SESSION_ID = '<%= params[:session_id] %>';
-const apiError = '<%= @error&.gsub(/'/, "\\\\'") %>';
-if (apiError !== '') console.error(apiError);
-
-const root = document.querySelector('.list_trac');
-const menu = root.querySelector("mx-menu");
-const menuButton = root.querySelector(".menu-button");
-if (menu && menuButton) {
-  menu.anchorEl = menuButton;
-  menuButton.addEventListener('click', () => {
-    logEvent('widget_open_menu');
-  });
-}
-
-const expandButton = root.querySelector(".expand-button");
-if (expandButton) expandButton.addEventListener("click", expand);
-const viewMore = root.querySelector(".view-more");
-if (viewMore) viewMore.addEventListener("click", expand);
-
-function expand(e) {
-  const { origin, pathname, search } = window.location;
-  const url = `${window.location.origin}<%= component_named_expanded_path('list_trac', params[:session_id]) %>`;
-  setLoading(true);
-  window.parent.postMessage(
-    { type: "EXPAND", payload: { url } },
-    "*"
-  );
-  logEvent(e.target.closest('.view-more') ? 'widget_click_view_more' : 'widget_expand');
-}
-
-function setLoading(isLoading) {
-  const loading = root.querySelector(".loading");
-  if (isLoading) {
-    loading.classList.replace("hidden", "flex");
-  } else {
-    loading.classList.replace("flex", "hidden");
-  }
-}
-
-const menuItems = root.querySelectorAll("mx-menu-item");
-if (menuItems.length) {
-  menuItems[0].addEventListener("click", () => {
-    window.parent.postMessage(
-      { type: "REMOVE", payload: { component: 'list_trac' } },
-      "*"
-    );
-  });
-}
-
-window.addEventListener("message", (e) => {
-  if (e.data.type === "UPDATE_PREVIEW") {
-    const { heading, logo } = e.data.payload;
-    if (heading) root.querySelector("#heading").innerText = heading;
-    const logoEl = root.querySelector("#logo");
-    if (logo) {
-      logoEl.src = logo;
-      logoEl.classList.remove("hidden");
-    } else if (logo !== undefined) {
-      logoEl.classList.add("hidden");
-    }
-  } else if (e.data.type === "SET_LOADING") {
-    const { isLoading, component } = e.data.payload;
-    if (component === 'list_trac') setLoading(isLoading);
-  }
-});
-
-root.addEventListener('click', (e) => {
-  if (e.target.closest('.sign-up')) {
-    logEvent('widget_click_view_more');
-  } else if (e.target.closest('a img#logo')) {
-    logEvent('widget_click_partner_logo');
-  }
-});
-
-function logEvent(eventType, eventData) {
-  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
-    method: 'POST',
-    body: JSON.stringify({
-      event_type: eventType,
-      event_data: eventData,
-      component: 'list_trac',
-     })
-  });
-}
-
-async function _fetch(url, options) {
-  options = { ...options, headers: { 'Content-Type': 'application/json' } }
-  const response = await fetch(url, options)
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-}
-</script>
+    <%= javascript_include_tag "list_trac_component", type: "module" %>
+  <% end %>
 <% end %>
