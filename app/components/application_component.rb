@@ -1,6 +1,7 @@
 class ApplicationComponent < ViewComponent::Base
-  def initialize(library_mode: false)
+  def initialize(widget: nil, library_mode: false)
     @library_mode = library_mode
+    @widget = widget # Set only when widget is rendered inside the widget panel
   end
 
   def before_render
@@ -8,8 +9,8 @@ class ApplicationComponent < ViewComponent::Base
     @error = nil
     @error_with_api = false
     begin
-      component_name = self.class.to_s.underscore.split("/").first
-      @widget = Widget.find_by(component: component_name)
+      component_name = params[:name] || self.class.to_s.underscore.split("/").first
+      @widget ||= Widget.find_by(component: component_name)
     rescue => e
       @error = e.message
       log_error(e)

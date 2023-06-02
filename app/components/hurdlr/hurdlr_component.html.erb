@@ -1,13 +1,15 @@
 <%= stylesheet_link_tag "hurdlr/style" %>
 
-<div class="hurdlr inline-widget relative flex flex-col border bg-white text-primary shadow-3 rounded-lg overflow-hidden m-8">
-  <header class="flex items-center min-h-48 bg-white border-b px-16 select-none">
-    <p id="heading" role="heading" aria-level="1" class="my-0 subtitle3">
-      <%= @widget.name %>
-    </p>
-  </header>
+<%= render(InlineWidgetComponent.new(widget: @widget, library_mode: @library_mode, error: @error)) do %>
   <div class="relative flex items-center flex-1 subtitle4 p-16">
-    <table class="w-full" cellspacing="0">
+    <table
+      class="w-full"
+      cellspacing="0"
+      data-revenue="<%= @data[:revenue] || 0 %>"
+      data-expenses="<%= @data[:expenses] || 0 %>"
+      data-overall-tax-amount="<%= @data[:overallTaxAmount] || 0 %>"
+      data-after-tax-income="<%= @data[:afterTaxIncome] || 0 %>"
+    >
       <thead class="sr-only">
         <tr>
           <th id="metric-heading">Metric</th>
@@ -49,165 +51,7 @@
       </div>
     <% end %>
   </div>
-  <footer
-    class="flex items-center min-h-48 justify-between bg-white border-t px-16"
-  >
-    <% unless @library_mode %>
-      <a href="<%= @widget.logo_link_url %>" target="_blank">
-    <% end %>
-    <img
-      id="logo"
-      src="<%= @widget.logo.attached? ? @widget.logo_url : "" %>"
-      class="<%= @widget.logo.attached? ? "" : "hidden" %>"
-      width="64"
-      height="30"
-      alt="<%= @widget.partner %>"
-    />
-    <% unless @library_mode %>
-      </a>
-    <% end %>
-    <div class="actions flex items-center">
-      <% unless @library_mode %>
-        <button class="menu-button flex items-center cursor-pointer" aria-label="Open menu">
-          <span class="icon icon-dots-three-vertical"></span>
-        </button>
-        <mx-menu>
-          <mx-menu-item>Remove widget</mx-menu-item>
-        </mx-menu>
-      <% end %>
-    </div>
-  </footer>
-</div>
 
-<script type="module">
-const SESSION_ID = '<%= params[:session_id] %>';
-const apiError = '<%= @error&.gsub(/'/, "\\\\'") %>';
-if (apiError !== '') console.error(apiError);
+  <%= javascript_include_tag "hurdlr_component", type: "module" %>
+<% end %>
 
-const root = document.querySelector('.hurdlr');
-const rows = [
-  { label: 'Income', key: 'revenue', value: <%= @data[:revenue] || 0 %> },
-  { label: 'Expenses', key: 'expenses', value: <%= @data[:expenses] || 0 %> },
-  { label: 'Taxes', key: 'overallTaxAmount', value: <%= @data[:overallTaxAmount] || 0 %> },
-  { label: 'Profit after tax', key: 'afterTaxIncome', value: <%= @data[:afterTaxIncome] || 0 %> },
-];
-const formatUSD = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
-const tbody = root.querySelector('tbody');
-// Generate the table rows
-rows.forEach(row => {
-  const tr = document.createElement('tr');
-  let percent = row.value / <%= @data[:revenue] || 0 %> * 100;
-  if (isNaN(percent)) percent = 0;
-  tr.innerHTML = `
-    <td aria-labelledby="metric-heading" id="${row.key}-label">
-      <div class="relative bg-bar overflow-hidden rounded h-32">
-        <!-- Dark label outside bar (visible to screen readers) -->
-        <span class="absolute top-0 flex px-8 h-full items-center whitespace-nowrap transition-opacity opacity-0 duration-200" data-percent="${percent}">
-          ${row.label}
-        </span>
-        <div class="bg-bar-fill relative inline-block h-full overflow-hidden rounded transform origin-left scale-x-0 transition-transform duration-200" style="width: ${percent}%">
-          <!-- White label inside bar (hidden from screen readers, but provides contrast) -->
-          <span aria-hidden="true" class="invisible text-white flex px-8 h-full items-center whitespace-nowrap transition-opacity opacity-0 duration-200">
-            ${row.label}
-          </span>
-        </div>
-      </div>
-    </td>
-    <td class="align-middle" aria-labelledby="amount-heading ${row.key}-label">
-      ${formatUSD.format(row.value)}
-    </td>
-  `
-  tbody.appendChild(tr);
-});
-
-// Move labels onto the bar if they do not fit to the right
-const observer = new ResizeObserver(() => {
-  const labels = root.querySelectorAll('.bg-bar > span');
-  labels.forEach(label => {
-    const percentNeeded = label.offsetWidth / label.parentElement.offsetWidth * 100;
-    const percentAvailable = 100 - label.dataset.percent;
-    const inBarLabel = label.nextElementSibling.querySelector('span');
-    label.classList.remove('opacity-0'); // Fade in labels
-    inBarLabel.classList.remove('opacity-0');
-    if (percentNeeded > percentAvailable) {
-      label.style.left = '0';
-      inBarLabel.classList.remove('invisible');
-    } else {
-      label.style.left = `${label.dataset.percent}%`;
-      inBarLabel.classList.add('invisible');
-    }
-  });
-});
-setTimeout(() => {
-  root.querySelectorAll('.scale-x-0').forEach(el => {
-    el.classList.remove('scale-x-0'); // Animate bars
-  });
-  observer.observe(root.querySelector('table'))
-}, 100);
-
-const menu = root.querySelector("mx-menu");
-const menuButton = root.querySelector(".menu-button");
-if (menu && menuButton) {
-  menu.anchorEl = menuButton;
-  menuButton.addEventListener('click', () => {
-    logEvent('widget_open_menu');
-  });
-}
-
-const menuItems = root.querySelectorAll("mx-menu-item");
-if (menuItems.length) {
-
-  menuItems[0].addEventListener("click", () => {
-    window.parent.postMessage(
-      { type: "REMOVE", payload: { component: 'hurdlr' } },
-      "*"
-    );
-  });
-}
-
-window.addEventListener("message", (e) => {
-  if (e.data.type === "UPDATE_PREVIEW") {
-    const { heading, logo } = e.data.payload;
-    if (heading) root.querySelector("#heading").innerText = heading;
-    const logoEl = root.querySelector("#logo");
-    if (logo) {
-      logoEl.src = logo;
-      logoEl.classList.remove("hidden");
-    } else if (logo !== undefined) {
-      logoEl.classList.add("hidden");
-    }
-  }
-});
-
-root.addEventListener('click', (e) => {
-  if (e.target.closest('.sign-up')) {
-    logEvent('widget_click_sign_up');
-  } else if (e.target.closest('a img#logo')) {
-    logEvent('widget_click_partner_logo');
-  }
-});
-
-function logEvent(eventType, eventData) {
-  _fetch(`/api/events/?session_id=${SESSION_ID}`, {
-    method: 'POST',
-    body: JSON.stringify({
-      event_type: eventType,
-      event_data: eventData,
-      component: 'hurdlr',
-     })
-  });
-}
-
-async function _fetch(url, options) {
-  options = { ...options, headers: { 'Content-Type': 'application/json' } }
-  const response = await fetch(url, options)
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-}
-</script>
