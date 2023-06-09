@@ -4,8 +4,7 @@ class Hurdlr::HurdlrComponent < ApplicationComponent
   def before_render
     super
     return if @error.present?
-    @data = {}
-    @data, @error = @library_mode ? [demo_data, nil] : user_vitals
+    @data = @library_mode ? demo_data : user_vitals
   end
 
   def user_vitals
@@ -25,11 +24,13 @@ class Hurdlr::HurdlrComponent < ApplicationComponent
         headers: {Authorization: "Bearer #{token}"}
       )
       data = JSON.parse(response, symbolize_names: true)
-      [data, data[:errorMessage]] # This sort of error message does not need to be logged
+      @subscription_not_found = data[:errorMessage]&.include?("subscription not found")
+      data
     rescue => e
+      @error = e.message || "Unknown error getting Hurdlr data"
       @error_with_api = true
       log_error(e)
-      [{}, e.message || "Unknown error getting Hurdlr data"]
+      {}
     end
   end
 
