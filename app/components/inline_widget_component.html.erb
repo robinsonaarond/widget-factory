@@ -9,7 +9,11 @@
     </p>
   </header>
 
-  <%= content %>
+  <div class="relative flex flex-1">
+    <%= content %>
+    <%= render "error" if @error.present? %>
+    <%= render "spinner" %>
+  </div>
 
   <% wrap_logo_with_link = !@library_mode && @widget.logo_link_url.present? %>
   <footer class="flex items-center justify-between min-h-48 bg-white border-t px-16">
