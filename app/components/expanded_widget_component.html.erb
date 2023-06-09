@@ -1,0 +1,23 @@
+<mx-modal large close-on-escape="false" class="<%= @widget.component %>">
+  <div slot="header-left"><%= @modal_heading %></div>
+  <div slot="header-right" class="flex items-center space-x-16">
+    <mx-button class="close-button" btn-type="text">Close</mx-button>
+  </div>
+
+  <%= content %>
+
+  <div slot="footer-left">
+    <% if @widget.logo.attached? %>
+      <a href="<%= @widget.logo_link_url %>" target="_blank">
+        <img id="logo" src="<%= @widget.logo_url %>" width="105" height="48" alt="<%= @widget.partner %>" />
+      </a>
+    <% end %>
+  </div>
+</mx-modal>
+
+<%= javascript_include_tag "expanded_widget_component" %>
+
+<script type="module">
+window.WidgetFactory.SESSION_ID = '<%= params[:session_id] %>';
+window.WidgetFactory.setUpModal('<%= @widget.component %>');
+</script>

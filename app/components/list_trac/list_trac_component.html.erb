@@ -4,90 +4,16 @@
 <% if current_page?(component_named_expanded_path('list_trac')) %>
 
   <%# Expanded Widget %>
-  <%# TODO: Factor out expanded component %>
-  <div class="list_trac w-screen h-screen">
-    <mx-modal large close-on-escape="false">
-      <div slot="header-left"><%= @widget.name %> (Last 30 days)</div>
-      <div slot="header-right" class="flex items-center space-x-16">
-        <mx-button class="close-button" btn-type="text">Close</mx-button>
-      </div>
-      <mx-table></mx-table>
-      <div slot="footer-left">
-        <% if @widget.logo.attached? %>
-          <a href="<%= @widget.logo_link_url %>" target="_blank">
-            <img id="logo" src="<%= @widget.logo_url %>" width="105" height="48" alt="<%= @widget.partner %>" />
-          </a>
-        <% end %>
-      </div>
-    </mx-modal>
-  </div>
+  <%= render(ExpandedWidgetComponent.new(widget: @widget, modal_heading: @widget.name + " (Last 30 days)")) do %>
+    <%# Table is populated via JavaScript %>
+    <mx-table></mx-table>
+  <% end %>
 
-  <%# Expanded Widget Script %>
-  <script type="module">
-  const SESSION_ID = '<%= params[:session_id] %>';
-  const root = document.querySelector('.list_trac');
-  const sendCloseMessage = () => {
-    window.parent.postMessage(
-      { type: "CLOSE_EXPANDED", payload: {} },
-      "*"
-    );
-  }
-  const modal = root.querySelector("mx-modal");
-  const observer = new MutationObserver(mutations => {
-    requestAnimationFrame(() => {
-      modal.isOpen = true;
-      window.parent.postMessage(
-        { type: "SET_LOADING", payload: { component: 'list_trac', isLoading: false } },
-        "*"
-      );
-    });
-    observer.disconnect();
-  });
-  observer.observe(root, { subtree: true, childList: true });
-  modal.addEventListener("mxClose", sendCloseMessage);
-  /* We have to recreate the close button since we are overriding the default content of the 
-  /* header-right slot. */
-  const closeButton = root.querySelector(".close-button");
-  closeButton.addEventListener("click", sendCloseMessage);
+  <%= javascript_include_tag "list_trac_component_expanded" %>
 
-  /* The close-on-escape behavior provided by mx-modal does not work in an iframe. */
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") sendCloseMessage();
-  });
-
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('a img#logo')) {
-      logEvent('widget_click_partner_logo');
-    }
-  });
-
-  const table = root.querySelector("mx-table");
-  table.rows = JSON.parse('<%= raw @listings.to_json %>');
-  table.columns = [
-    { heading: "Address", property: "Address", sortable: true },
-    { heading: "Views", property: "ViewCount", sortable: true },
-    { heading: "Leads", property: "InquiryCount", sortable: true },
-    { isActionColumn: true } // Design has a blank column here
-  ];
-
-  function logEvent(eventType, eventData) {
-    _fetch(`/api/events/?session_id=${SESSION_ID}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        event_type: eventType,
-        event_data: eventData,
-        component: 'list_trac',
-      })
-    });
-  }
-
-  async function _fetch(url, options) {
-    options = { ...options, headers: { 'Content-Type': 'application/json' } }
-    const response = await fetch(url, options)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  }
+  <script>
+  const listingsJson = '<%= raw @listings.to_json %>';
+  initListingTable(listingsJson);
   </script>
 
 <% else %>
