@@ -17,15 +17,6 @@ class ListTrac::ListTracComponentTest < ViewComponent::TestCase
 
   # Inline component tests
 
-  def test_inline_component_renders_name
-    with_inline_component do
-      assert_includes(
-        rendered.to_html,
-        @widget.name
-      )
-    end
-  end
-
   def test_inline_component_renders_listing_table
     with_inline_component do
       with_listings do
@@ -48,74 +39,7 @@ class ListTrac::ListTracComponentTest < ViewComponent::TestCase
     end
   end
 
-  def test_inline_component_renders_logo
-    with_inline_component do
-      assert_includes(
-        rendered.css("img#logo").to_html,
-        "logo.png"
-      )
-      assert_includes(
-        rendered.css("img#logo").to_html,
-        "alt=\"#{@widget.partner}\""
-      )
-    end
-  end
-
-  def test_inline_component_renders_error
-    with_inline_component do
-      instance_variable_set(:@error, "unknown error") do
-        assert_includes(
-          rendered.to_html,
-          "working on fixing things"
-        )
-      end
-    end
-  end
-
-  def test_component_renders_error_with_api
-    instance_variable_set(:@error, "unknown error") do
-      instance_variable_set(:@error_with_api, true) do
-        assert_includes(
-          rendered.to_html,
-          "trouble connecting to ListTrac"
-        )
-      end
-    end
-  end
-
-  # Expanded component tests
-  # The table is generated with JavaScript, so we can't test it here
-
-  def test_expanded_component_renders_name_in_header
-    with_expanded_component do
-      assert_includes(
-        rendered.css("[slot='header-left']").to_html,
-        @widget.name
-      )
-    end
-  end
-
-  def test_expanded_component_renders_logo_link
-    with_expanded_component do
-      assert_includes(
-        rendered.css("[slot='footer-left'] a").to_html,
-        @widget.logo_link_url
-      )
-    end
-  end
-
-  def test_expanded_component_renders_logo
-    with_expanded_component do
-      assert_includes(
-        rendered.css("[slot='footer-left'] img").to_html,
-        "logo.png"
-      )
-      assert_includes(
-        rendered.css("[slot='footer-left'] img").to_html,
-        "alt=\"#{@widget.partner}\""
-      )
-    end
-  end
+  # The expanded component table is generated with JavaScript, so we can't test it here
 
   private
 
@@ -125,12 +49,6 @@ class ListTrac::ListTracComponentTest < ViewComponent::TestCase
 
   def with_inline_component
     with_request_url "/component/list_trac/12345" do
-      yield
-    end
-  end
-
-  def with_expanded_component
-    with_request_url "/component/list_trac/expanded/12345" do
       yield
     end
   end

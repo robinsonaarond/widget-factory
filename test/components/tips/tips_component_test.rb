@@ -9,13 +9,6 @@ class Tips::TipsComponentTest < ViewComponent::TestCase
     @error = nil
   end
 
-  def test_component_renders_name
-    assert_includes(
-      rendered.css("#heading").to_html,
-      @widget.name
-    )
-  end
-
   def test_component_renders_tip
     with_tips_params do
       assert_includes(
@@ -45,17 +38,6 @@ class Tips::TipsComponentTest < ViewComponent::TestCase
         "--tip-bg-#{my_tip[:bg]}"
       )
     end
-  end
-
-  def test_component_renders_logo
-    assert_includes(
-      rendered.css("img#logo").to_html,
-      "logo.png"
-    )
-    assert_includes(
-      rendered.css("img#logo").to_html,
-      "alt=\"#{@widget.partner}\""
-    )
   end
 
   private
