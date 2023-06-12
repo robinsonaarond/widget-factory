@@ -11,8 +11,8 @@
 
   <div class="relative flex flex-1">
     <%= content %>
-    <%= render "error" if @error.present? %>
-    <%= render "spinner" %>
+    <%= render "component/error" if @error.present? %>
+    <%= render "component/spinner" %>
   </div>
 
   <% wrap_logo_with_link = !@library_mode && @widget.logo_link_url.present? %>

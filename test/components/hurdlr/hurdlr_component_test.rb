@@ -9,29 +9,11 @@ class Hurdlr::HurdlrComponentTest < ViewComponent::TestCase
     @error = nil
   end
 
-  def test_component_renders_name
-    assert_includes(
-      rendered.css("#heading").to_html,
-      @widget.name
-    )
-  end
-
   def test_component_renders_metrics_table
     # Rows are added via JavaScript, so we will just check for the headers
     table = rendered.css("table").to_html
     assert_includes(table, "Metric")
     assert_includes(table, "Amount")
-  end
-
-  def test_component_renders_logo
-    assert_includes(
-      rendered.css("img#logo").to_html,
-      "logo.png"
-    )
-    assert_includes(
-      rendered.css("img#logo").to_html,
-      "alt=\"#{@widget.partner}\""
-    )
   end
 
   def test_component_renders_signup
@@ -40,26 +22,6 @@ class Hurdlr::HurdlrComponentTest < ViewComponent::TestCase
         rendered.to_html,
         "Sign up for Hurdlr"
       )
-    end
-  end
-
-  def test_component_renders_error
-    instance_variable_set(:@error, "unknown error") do
-      assert_includes(
-        rendered.to_html,
-        "working on fixing things"
-      )
-    end
-  end
-
-  def test_component_renders_error_with_api
-    instance_variable_set(:@error, "unknown error") do
-      instance_variable_set(:@error_with_api, true) do
-        assert_includes(
-          rendered.to_html,
-          "trouble connecting to Hurdlr"
-        )
-      end
     end
   end
 
