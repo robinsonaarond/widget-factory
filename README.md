@@ -97,7 +97,9 @@ The component will be viewable at the following URL:
 
 `http://localhost:{port}/component/todo_list/{session_id}`
 
-### Leverage the Inline Widget Component
+### Leverage the Inline and Expanded Widget Components
+
+#### Inline Widget Component
 
 The `inline_widget` component is not a widget itself but provides common UI and functionality needed to render a widget "inline" (as shown in "My Widgets"). To use this component, your template should resemble the following:
 
@@ -108,6 +110,16 @@ The `inline_widget` component is not a widget itself but provides common UI and 
 ```
 
 The Inline Widget component provides many JavaScript utility methods under the `window.WidgetFactory` namespace. These can and should be used to log analytic events, expand the widget, etc. See the `app/assets/javascripts/inline_widget_component.js` file.
+
+#### Expanded Widget Component
+
+The `expanded_widget` component provides the functionality needed to render an "expanded" widget (i.e. a modal). To use this component, your template should resemble the following:
+
+```erb
+<%= render(ExpandedWidgetComponent.new(widget: @widget)) do %>
+  <!-- Your widget's inner HTML goes here -->
+<% end %>
+```
 
 ### Add Custom JavaScript
 
