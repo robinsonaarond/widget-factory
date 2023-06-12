@@ -1,0 +1,115 @@
+<%= stylesheet_link_tag "rismedia/style" %>
+
+<% if current_page?(component_named_expanded_path('rismedia')) %>
+
+  <%# Expanded Widget %>
+  <%= render(ExpandedWidgetComponent.new(widget: @widget)) do %>
+    <nav>
+      <div role="tablist" class="flex justify-start mb-20 border-b text-medium-emphasis border-current">
+        <% @articles.keys.each_with_index do |category, i| %>
+          <button
+            id="tab-<%= category %>"
+            role="tab"
+            class="flex items-center justify-center h-48"
+            style="width: 7.5rem"
+            aria-selected="<%= (i == 0).to_s %>"
+            aria-controls="panel-<%= category %>"
+            tabindex="<%= i == 0 ? 0 : -1 %>"
+          >
+            <span class="subtitle2 uppercase tracking-1-25 text-current">
+              <%= category.capitalize %>
+            </span>
+          </button>
+        <% end %>
+      </div>
+    </nav>
+    <% @articles.keys.each_with_index do |category, i| %>
+      <section id="panel-<%= category %>" role="tabpanel" aria-labelledby="tab-<%= category %>" class="<%= i == 0 ? "flex" : "hidden" %> flex-col flex-1 gap-16">
+        <% @articles[category].each do |article| %>
+          <article>
+            <div class="float-left overflow-hidden rounded-lg mr-8" style="width: 8.75rem; height: 5rem">
+              <img
+                src="<%= article["thumbnailLink"] %>"
+                alt=""
+                class="object-cover w-full h-full"
+              />
+            </div>
+            <div class="flex flex-col">
+              <a href="<%= article["url"] %>" target="_blank" class="subtitle2 mb-2">
+                <%= article["title"].html_safe %>
+              </a>
+              <span class="caption1 text-medium-emphasis">
+                <%= article["author"] %>
+              </span>
+            </div>
+          </article>
+        <% end %>
+        <div class="text-center">
+          <mx-button href="https://www.rismedia.com/StellarMLS-auth/?news_id=0" target="_blank">
+            More <%= category %> from RISMedia
+          </mx-button>
+        </div>
+      </section>
+    <% end %>
+  <% end %>
+
+  <%= javascript_include_tag "rismedia_component", type: "module" %>
+  
+<% else %>
+
+  <%# Inline Widget %>
+  <%= render(InlineWidgetComponent.new(widget: @widget, expand_url: @expand_url, library_mode: @library_mode, error: @error)) do %>
+    <div class="flex-1 py-12 px-16 min-w-0 max-w-full bg-white overflow-hidden">
+      <nav>
+        <div role="tablist" class="flex mb-12 h-24 border-b text-medium-emphasis border-current">
+          <% @articles.keys.each_with_index do |category, i| %>
+            <button
+              id="tab-<%= category %>"
+              role="tab"
+              class="flex flex-1 items-center justify-center"
+              aria-selected="<%= (i == 0).to_s %>"
+              aria-controls="panel-<%= category %>"
+              tabindex="<%= i == 0 ? 0 : -1 %>"
+            >
+              <span class="overline2 font-semibold text-current">
+                <%= category.capitalize %>
+              </span>
+            </button>
+          <% end %>
+        </div>
+      </nav>
+      <% @articles.keys.each_with_index do |category, i| %>
+        <section id="panel-<%= category %>" role="tabpanel" aria-labelledby="tab-<%= category %>" class="<%= i == 0 ? "flex" : "hidden" %> flex-col flex-1 gap-10">
+          <% @articles[category].take(2).each do |article| %>
+            <article>
+              <div class="float-left overflow-hidden rounded-lg mr-10" style="width: 4.1875rem; height: 3.125rem">
+                <img
+                  src="<%= article["thumbnailLink"] %>"
+                  alt=""
+                  class="object-cover w-full h-full"
+                />
+              </div>
+              <div class="flex flex-col">
+                <a href="<%= article["url"] %>" target="_blank" class="caption1 mb-2">
+                  <%= article["title"].html_safe %>
+                </a>
+                <span class="caption2 text-medium-emphasis">
+                  <%= article["author"] %>
+                </span>
+              </div>
+            </article>
+          <% end %>
+          <button
+            class="view-more flex items-center justify-center mt-2 px-8 mx-auto"
+          >
+            <span class="caption2 font-semibold uppercase tracking-1-25 text-link">
+              View more <%= category %>
+            </span>
+          </button>
+        </section>
+      <% end %>
+    </div>
+
+    <%= javascript_include_tag "rismedia_component", type: "module" %>
+  <% end %>
+<% end %>

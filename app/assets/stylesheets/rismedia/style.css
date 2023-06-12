@@ -1,0 +1,17 @@
+.rismedia [role="tab"][aria-selected="true"] {
+  background-color: var(--primary);
+}
+.rismedia [role="tab"]:hover {
+  background-color: #7b4db7;
+}
+.rismedia [role="tab"][aria-selected="true"] > span,
+.rismedia [role="tab"]:hover > span {
+  color: var(--mds-text-primary-inverted);
+}
+.rismedia article a {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
