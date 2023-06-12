@@ -24,3 +24,14 @@
 .tips .tip-container {
   background-color: rgba(255, 255, 255, 0.95);
 }
+
+.tips .tip-container p {
+  --line-clamp: 7;
+  display: -webkit-box;
+  -webkit-line-clamp: var(--line-clamp);
+  -webkit-box-orient: vertical;
+}
+
+.tips .tip-container mx-button:not(.hidden) + p {
+  --line-clamp: 5;
+}
