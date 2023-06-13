@@ -9,7 +9,7 @@ class Api::UserWidgetsController < ApplicationController
       user_widget.row_order_position = index + 1
       user_widget.save
     end
-    render json: { status: :ok }
+    render json: {status: :ok}
   end
 
   # DELETE /api/user_widgets/:id
@@ -18,9 +18,9 @@ class Api::UserWidgetsController < ApplicationController
     user_widget = UserWidget.find_or_initialize_by(widget_id: params[:id], user_uuid: user_uuid)
     user_widget.removed = true
     if user_widget.save
-      render json: { status: :ok }
+      render json: {status: :ok}
     else
-      render json: { status: :error }
+      render json: {status: :error}
     end
   end
 
@@ -30,9 +30,9 @@ class Api::UserWidgetsController < ApplicationController
     user_widget = UserWidget.find_or_initialize_by(widget_id: params[:id] || params[:widget_id], user_uuid: user_uuid)
     user_widget.removed = false
     if user_widget.save
-      render json: { status: :ok }
+      render json: {status: :ok}
     else
-      render json: { status: :error }
+      render json: {status: :error}
     end
   end
 end

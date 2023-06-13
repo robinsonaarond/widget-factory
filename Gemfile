@@ -52,7 +52,7 @@ group :test do
   gem "minitest-junit"
 end
 
-gem 'knapsack', group: [:development, :test]
+gem "knapsack", group: [:development, :test]
 
 gem "webmock", "~> 3.18"
 

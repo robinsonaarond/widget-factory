@@ -33,7 +33,7 @@ module WidgetFactory
       config.service_url = {
         auth: ENV["auth_service_url"] || "#{config.base_service}/service/v1/auth",
         profile_v2: ENV["profile_service_v2_url"] || "#{config.base_service}/service/profile/v2",
-        profile_v3: ENV["profile_service_v2_url"] || "#{config.base_service}/service/profile/v3",
+        profile_v3: ENV["profile_service_v3_url"] || "#{config.base_service}/service/profile/v3"
       }
 
       config.active_job.queue_adapter = :sidekiq
