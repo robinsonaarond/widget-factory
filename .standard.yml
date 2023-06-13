@@ -8,3 +8,7 @@ ignore: # default: []
   - 'vendor/**/*'
   - '**/lograge.rb'
   - '**/log_initializer.rb'
+  - 'tmp/**/*'
+  - 'bin/**/*'
+  - '.git/**/*'
+  - 'node_modules/**/*'

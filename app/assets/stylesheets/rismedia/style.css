@@ -1,11 +1,11 @@
-.rismedia [role="tab"][aria-selected="true"] {
+.rismedia [role='tab'][aria-selected='true'] {
   background-color: var(--primary);
 }
-.rismedia [role="tab"]:hover {
+.rismedia [role='tab']:hover {
   background-color: #7b4db7;
 }
-.rismedia [role="tab"][aria-selected="true"] > span,
-.rismedia [role="tab"]:hover > span {
+.rismedia [role='tab'][aria-selected='true'] > span,
+.rismedia [role='tab']:hover > span {
   color: var(--mds-text-primary-inverted);
 }
 .rismedia article a {

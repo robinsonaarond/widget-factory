@@ -3,7 +3,7 @@ require "webmock/minitest"
 require_relative "../config/environment"
 require "rails/test_help"
 
-require 'knapsack'
+require "knapsack"
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
@@ -16,7 +16,7 @@ class ActiveSupport::TestCase
 
   setup do
     WebMock.allow_net_connect!
-  end  
+  end
 end
 
 knapsack_adapter = Knapsack::Adapters::MinitestAdapter.bind

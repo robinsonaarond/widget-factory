@@ -12,6 +12,6 @@ class Api::EventsController < ApplicationController
       session.dig(:current_user, :board_uuid),
       session.dig(:current_user, :office_uuid)
     )
-    render json: { success: true }
+    render json: {success: true}
   end
 end

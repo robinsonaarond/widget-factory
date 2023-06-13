@@ -10,7 +10,7 @@ class Api::WidgetsControllerTest < ActionController::TestCase
 
   test "should get single widget" do
     widget = widgets(:one)
-    get :show, params: { id: widget.id }
+    get :show, params: {id: widget.id}
     assert_response :success
     response_body = JSON.parse(response.body)
     assert_equal widget.id, response_body["id"]

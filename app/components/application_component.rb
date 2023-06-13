@@ -25,7 +25,9 @@ class ApplicationComponent < ViewComponent::Base
       session.dig(:current_user, :uuid),
       session.dig(:current_user, :company_uuid),
       session.dig(:current_user, :board_uuid),
-      session.dig(:current_user, :office_uuid)  
-    ) rescue nil
+      session.dig(:current_user, :office_uuid)
+    )
+  rescue
+    nil
   end
 end
