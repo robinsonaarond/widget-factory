@@ -9,8 +9,8 @@ if !Rails.env.test?
       c.env = Rails.env
       c.service = service_name
       c.version = ENV['BUILD_VERSION'] || ENV['GIT_TAG'] || `git describe --tags`.chomp
-      c.agent.host = ENV['DD_AGENT_HOST'] || 'localhost'
-      c.agent.port = ENV['DD_TRACE_AGENT_PORT'] || '8126'
+      c.agent.host = ENV['DD_AGENT_SERVICE_HOST'] || ENV['DD_AGENT_HOST'] || 'localhost'
+      c.agent.port = ENV['DD_AGENT_SERVICE_PORT'] || ENV['DD_TRACE_AGENT_PORT'] || '8126'
       c.tracing.instrument :rack,  { request_queuing: true, service_name: "#{service_name}-rack"  }
       c.tracing.instrument :rails, {service_name: "#{service_name}-rails" }
       c.tracing.instrument :redis, {service_name: "#{service_name}-redis" }
